@@ -1,0 +1,50 @@
+public class Cell
+{
+	private double RESOURCE_CAP; // may be double? static!!
+	private double REGROWTH_RATE;
+
+	private boolean occupied;
+	private double resourceLevel;
+
+	public Cell()
+	{
+		RESOURCE_CAP = 0;
+		REGROWTH_RATE = 0;
+		occupied = false;
+		resourceLevel = 0;
+	}
+
+	public Cell(double resourceCap, double resourceRate,
+		boolean occupancy, double resourceLev)
+	{
+		RESOURCE_CAP = resourceCap;
+		REGROWTH_RATE = resourceRate;
+		occupied = occupancy;
+		resourceLevel = resourceLev;
+	}
+
+	public boolean getOccupancy()
+	{
+		return occupied;
+	}
+
+	public double getCapacity()
+	{
+		return RESOURCE_CAP;
+	}
+
+	public double getResource()
+	{
+		return resourceLevel;
+	}
+
+	public void setOccupancy(boolean x)
+	{
+		occupied = x;
+	}
+
+	public void setResource(double level)
+	{
+		resourceLevel = level;
+	}
+}
