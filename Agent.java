@@ -1,9 +1,13 @@
+import java.util.Random;
+
 public class Agent
 {
     private String id;   // identifier for the agent
     private int    row;
     private int    col;
     private int vision;
+    private double wealth;
+    private double metabolicRate;
 
     Agent(String id)
     {
@@ -15,6 +19,11 @@ public class Agent
         this.id = id;
         this.row = row;
         this.col = col;
+
+        Random rand = new Random();
+        this.vision = rand.nextInt(6) + 1;
+        
+        this.metabolicRate = rand.next
     }
 
     // simple accessor methods below
@@ -29,41 +38,53 @@ public class Agent
         this.col = col;
     }
 
+    public void collect(Agent A, Cell C)
+    {
+        A.wealth += C.getResource();
+        C.setResource(0);
+    }
+
+    public void move(Agent A, Landscape land)
+    {
+        Cell dest = A.look(land);                       // check for place to go
+        A.setRowCol(dest.getRow(), dest.getCol());      // move to that location
+        C.setOccupancy(true);                           // you're there now
+        collect(A, C);                                  // collect resources
+    }
+
     public Cell look(Landscape landscape)
     {
         Cell max = new Cell();
         int n = landscape.getMaxDimension();
         for(int i = 1; i <= this.vision; i++) { // run the vision algorithm.
-          if(landscape.getCellAt(this.row, helperPlus(this.col, n)).getResource() > max.getResource()) {
-            max = landscape.getCellAt(this.row, helperPlus(this.col, n));
-          }
-          if(landscape.getCellAt(this.row, helperMinus(this.col, n)).getResource() > max.getResource()) {
-            max = landscape.getCellAt(this.row, helperMinus(this.col, n));
-          }
-          if(landscape.getCellAt(helperPlus(this.row, n), this.col).getResource() > max.getResource()) {
-            max = landscape.getCellAt(  helperPlus(this.row, n), this.col);
-          }
-          if(landscape.getCellAt(helperMinus(this.row, n), this.col).getResource() > max.getResource()) {
-            max = landscape.getCellAt(helperMinus(this.row, n), this.col);
-          }
-        }
 
+            // Temp looks for the max valid cell
+            Cell temp = landscape.getCellAt(this.row, helperPlus(this.col, n)).getResource(); 
+            if( temp > max.getResource() && temp.getOccupancy() == false ) 
+            { max = landscape.getCellAt(this.row, helperPlus(this.col, n)); }
+            
+            temp = landscape.getCellAt(this.row, helperMinus(this.col, n)).getResource(); 
+            if( temp > max.getResource() && temp.getOccupancy() == false ) 
+            { max = landscape.getCellAt(this.row, helperMinus(this.col, n)); }
+            
+            temp = landscape.getCellAt(helperPlus(this.row, n), this.col).getResource(); 
+            if( temp > max.getResource() && temp.getOccupancy() == false ) 
+            { max = landscape.getCellAt(  helperPlus(this.row, n), this.col); }
+            
+            temp = landscape.getCellAt(helperMinus(this.row, n), this.col).getResource();
+            if( temp > max.getResource() && temp.getOccupancy() == false ) 
+            { max = landscape.getCellAt(helperMinus(this.row, n), this.col); }
+        }
         return max; // returns max valid cell
     }
 
     // calculates where the cell looks positively (donut array)
     public int helperPlus(int x, int max)
-    {
-      return ((x + this.vision + max) % max );
-    }
+    { return ((x + this.vision + max) % max ); }
 
     // calculates where the cell looks negatively (donut array)
     public int helperMinus(int x, int max)
-    {
-      return ((x - this.vision + max) % max );
-    }
-
-
+    { return ((x - this.vision + max) % max ); }
 
 }
 

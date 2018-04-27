@@ -5,6 +5,8 @@ public class Cell
 
 	private boolean occupied;
 	private double resourceLevel;
+    private int row;
+    private int col;
 
 	public Cell()
 	{
@@ -22,6 +24,9 @@ public class Cell
 		occupied = occupancy;
 		resourceLevel = resourceLev;
 	}
+
+    public int getRow() { return this.row; }
+    public int getCol() { return this.col; }
 
 	public boolean getOccupancy()
 	{
