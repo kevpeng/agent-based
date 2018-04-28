@@ -29,7 +29,8 @@ public class Agent
         this.col = col;
 
         // initialize rand
-        Random rand = new Random();
+                Random rand = new Random();
+
 
         // initialize characteristics
         this.vision = rand.nextInt(6) + 1;
@@ -42,6 +43,8 @@ public class Agent
 
     // helper function to get a double
     public static double getRandomDouble(double min, double max) {
+                Random r = new Random();
+
         return min + (r.nextDouble() * (max - min));
     }
 
@@ -52,10 +55,10 @@ public class Agent
     public int    getCol() { return this.col; }
     public int    getVision() { return this.vision; }
     public double getWealth() { return this.wealth; }
-    public double getMetabolicRate { return this.metabolicRate; }
-    public double getIntermovement { return this.intermovement; }
-    public double getCurrentAge { return this.currentAge; }
-    public double getMaxAge { return this.maxAge; }
+    public double getMetabolicRate() { return this.metabolicRate; }
+    public double getIntermovement() { return this.intermovement; }
+    public double getCurrentAge() { return this.currentAge; }
+    public double getMaxAge() { return this.maxAge; }
 
 
 
@@ -94,20 +97,20 @@ public class Agent
         for(int i = 1; i <= vision; i++) { // run the vision algorithm.
 
             // Temp looks for the max valid cell
-            Cell temp = landscape.getCellAt(this.row, helperPlus(this.col, n)).getResource(); 
-            if( temp > max.getResource() && temp.getOccupancy() == false ) 
+            Cell temp = landscape.getCellAt(this.row, helperPlus(this.col, n));           
+            if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = landscape.getCellAt(this.row, helperPlus(this.col, n)); }
             
-            temp = landscape.getCellAt(this.row, helperMinus(this.col, n)).getResource(); 
-            if( temp > max.getResource() && temp.getOccupancy() == false ) 
+            temp = landscape.getCellAt(this.row, helperMinus(this.col, n)); 
+            if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = landscape.getCellAt(this.row, helperMinus(this.col, n)); }
             
-            temp = landscape.getCellAt(helperPlus(this.row, n), this.col).getResource(); 
-            if( temp > max.getResource() && temp.getOccupancy() == false ) 
+            temp = landscape.getCellAt(helperPlus(this.row, n), this.col); 
+            if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = landscape.getCellAt(  helperPlus(this.row, n), this.col); }
             
-            temp = landscape.getCellAt(helperMinus(this.row, n), this.col).getResource();
-            if( temp > max.getResource() && temp.getOccupancy() == false ) 
+            temp = landscape.getCellAt(helperMinus(this.row, n), this.col);
+            if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = landscape.getCellAt(helperMinus(this.row, n), this.col); }
         }
         return max; // returns max valid cell
@@ -122,7 +125,3 @@ public class Agent
     { return ((x - this.vision + max) % max ); }
 
 }
-
-//movement rule so agent can successfully look (testing border conditions too)
-//find closest unocccupied cell with max resources
-// (row - vision + NUM_ROWS) % NUM_ROWS
