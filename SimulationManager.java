@@ -45,7 +45,7 @@ class SimulationManager extends WindowManager
             while(true) {
                 int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
                 int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-                if(landscape.getCellAt(row, col).getOccupancy() == FALSE)
+                if(landscape.getCellAt(row, col).getOccupancy() == false)
                 { 
                     a.setRowCol(row, col);
                     break; 
@@ -55,7 +55,7 @@ class SimulationManager extends WindowManager
         }
 
         this.createWindow();
-        this.run();
+//        this.run();
     }
 
     //======================================================================
