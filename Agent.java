@@ -54,7 +54,16 @@ public class Agent
     public double getCurrentAge() { return this.currentAge; }
     public double getMaxAge() { return this.maxAge; }
 
-
+    public void print() {
+        System.out.println("ID: " + this.getID());
+        System.out.println("Location: " + this.getRow() + ", " + this.getCol());
+        System.out.println("Vision: " + this.getVision());
+        System.out.println("Current Wealth: " + this.getWealth());
+        System.out.println("Metabolic rate: " + this.getMetabolicRate());
+        System.out.println("Intermovement time: " + this.getIntermovement());
+        System.out.println("Current Age: " + this.getCurrentAge());
+        System.out.println("Max age: " + this.getMaxAge());
+    }
 
     // simple mutator methods below
     
