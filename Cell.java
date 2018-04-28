@@ -1,3 +1,4 @@
+
 public class Cell
 {
 	private double RESOURCE_CAP; // may be double? static!!
@@ -5,8 +6,9 @@ public class Cell
 
 	private boolean occupied;
 	private double resourceLevel;
-    private int row;
-    private int col;
+        private int row;
+        private int col;
+        private double timeLastUpdated = 0;
 
 	public Cell()
 	{
@@ -52,4 +54,14 @@ public class Cell
 	{
 		resourceLevel = level;
 	}
+        
+        public void updateCell(double time) {
+    
+       timeLastUpdated = time;
+  }
+
+  public void regrowCell(double time) {
+   resourceLevel= Math.min(RESOURCE_CAP, resourceLevel + ((time - timeLastUpdated) * REGROWTH_RATE));
+   
+  }
 }
