@@ -33,12 +33,18 @@ public class Agent
 
         // initialize characteristics
         this.vision = rand.nextInt(6) + 1;
-        this.wealth = rand.nextDouble(25) + 5;
-        this.metabolicRate = rand.nextDouble(4) + 1;
+        this.wealth = getRandomDouble(5, 25);
+        this.metabolicRate = getRandomDouble(1,4);
         this.intermovement = Math.exp(1);
         this.currentAge = 0;
-        this.maxAge = rand.nextDouble(100) + 60;
+        this.maxAge = getRandomDouble(60,100);
     }
+
+    // helper function to get a double
+    public static double getRandomDouble(double min, double max) {
+        return min + (r.nextDouble() * (max - min));
+    }
+
 
     // simple accessor methods below
     public String getID()  { return this.id;  }
