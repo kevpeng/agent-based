@@ -1,62 +1,91 @@
-import java.util.Random;
+import java.util.*;
 
 public class Agent
 {
-    private String id;   // identifier for the agent
-    private int    row;
-    private int    col;
+    // identifier for the agent
+    private String id; 
+    
+    // position variables
+    private int row;
+    private int col;
+    
+    // characteristics for an agent
     private int vision;
     private double wealth;
     private double metabolicRate;
+    private double intermovement;
+    private double currentAge;
+    private double maxAge;
 
-    Agent(String id)
-    {
-        this.id = id;
-    }
+    // constructor
+    Agent(String id){ this.id = id; }
 
+    // constructor
     Agent(String id, int row, int col)
     {
+        // initialize id/position
         this.id = id;
         this.row = row;
         this.col = col;
 
+        // initialize rand
         Random rand = new Random();
+
+        // initialize characteristics
         this.vision = rand.nextInt(6) + 1;
-        
-        this.metabolicRate = rand.next
+        this.wealth = rand.nextDouble(25) + 5;
+        this.metabolicRate = rand.nextDouble(4) + 1;
+        this.intermovement = Math.exp(1);
+        this.currentAge = 0;
+        this.maxAge = rand.nextDouble(100) + 60;
     }
 
     // simple accessor methods below
+    public String getID()  { return this.id;  }
     public int    getRow() { return this.row; }
     public int    getCol() { return this.col; }
-    public String getID()  { return this.id;  }
     public int    getVision() { return this.vision; }
+    public double getWealth() { return this.wealth; }
+    public double getMetabolicRate { return this.metabolicRate; }
+    public double getIntermovement { return this.intermovement; }
+    public double getCurrentAge { return this.currentAge; }
+    public double getMaxAge { return this.maxAge; }
+
+
+
     // simple mutator methods below
-    public void setRowCol(int row, int col)
-    {
+    
+    // Update the position!!
+    public void setRowCol(int row, int col) {
         this.row = row;
         this.col = col;
     }
 
-    public void collect(Agent A, Cell C)
-    {
-        A.wealth += C.getResource();
+    // getting more wealth!!
+    public void collect(Cell C) {
+        this.wealth += C.getResource();
         C.setResource(0);
     }
 
-    public void move(Agent A, Landscape land)
+    // set new intermovement time
+    public void setNewTime() { this.intermovement = Math.exp(1); }
+
+    // move agent to new 
+    public void move(Landscape land)
     {
-        Cell dest = A.look(land);                       // check for place to go
-        A.setRowCol(dest.getRow(), dest.getCol());      // move to that location
-        C.setOccupancy(true);                           // you're there now
-        collect(A, C);                                  // collect resources
+        Cell C = look(this.getVision(), land);                     // check for place to go
+        this.setRowCol(C.getRow(), C.getCol());                    // move to that location
+        land.getCellAt(C.getRow(), C.getCol()).setOccupancy(true); // set the landscape's cell to occupied
+        this.collect(land.getCellAt(C.getRow(), C.getCol()));      // collect resources
+         this.setNewTime();                                         // update timer for the agent
+        
     }
 
-    public Cell look(Landscape landscape)
+    public Cell look(int vision, Landscape landscape)
     {
         Cell max = new Cell();
         int n = landscape.getMaxDimension();
-        for(int i = 1; i <= this.vision; i++) { // run the vision algorithm.
+        for(int i = 1; i <= vision; i++) { // run the vision algorithm.
 
             // Temp looks for the max valid cell
             Cell temp = landscape.getCellAt(this.row, helperPlus(this.col, n)).getResource(); 
