@@ -18,19 +18,13 @@ public class Agent
     private double maxAge;
 
     // constructor
-    Agent(String id){ this.id = id; }
-
-    // constructor
-    Agent(String id, int row, int col)
+    Agent(String id)
     {
         // initialize id/position
         this.id = id;
-        this.row = row;
-        this.col = col;
 
         // initialize rand
-                Random rand = new Random();
-
+        Random rand = new Random();
 
         // initialize characteristics
         this.vision = rand.nextInt(6) + 1;
