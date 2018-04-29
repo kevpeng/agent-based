@@ -119,12 +119,12 @@ class SimulationManager extends WindowManager
 		{
 			Event e = eventList.poll();
 			this.time = e.getTime();
-			if(e.getType.equals("move"))
+			if(e.getType().equals("move"))
 			{
-				e.getAgent.move(landscape);
+				e.getAgent().move(landscape);
 				//schedule next event for this agent
 			}
-			else if(e.getType.equals("DEATH"))
+			else if(e.getType().equals("DEATH"))
 			{
 				//kill
 				//e.getAgent.
