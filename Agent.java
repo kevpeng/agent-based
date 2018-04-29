@@ -41,7 +41,6 @@ public class Agent
 
     }
 
-'''
      Agent(String id, double time)
     {
         // initialize id/position
