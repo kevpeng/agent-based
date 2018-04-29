@@ -66,6 +66,7 @@ public class Agent
         System.out.println("Intermovement time: " + this.getIntermovement());
         System.out.println("Current Age: " + this.getCurrentAge());
         System.out.println("Max age: " + this.getMaxAge());
+        System.out.println();
     }
 
     // simple mutator methods below

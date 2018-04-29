@@ -2,10 +2,12 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.*;
 
 class SimulationManager extends WindowManager
 {
     protected ArrayList<Agent> agentList; 
+    protected PriorityQueue<Event> eventList;
     // A list of all agents in the simulation; this is declared as
     // protected because we access it directly from within AgentCanvas.  
     // Why?  Because we only access it to draw the agents, and given 
@@ -29,6 +31,8 @@ class SimulationManager extends WindowManager
 
         this.gridSize  = gridSize;
         this.agentList = new ArrayList<Agent>();
+        this.eventList = new PriorityQueue<Event>(new EventComparator());
+
 
         rng = new Random(initialSeed);
 
@@ -40,6 +44,7 @@ class SimulationManager extends WindowManager
         {
             Agent a = new Agent("agent " + agentList.size());
             agentList.add(a);
+
 
             // to do: check valid
             while(true) {
@@ -54,6 +59,16 @@ class SimulationManager extends WindowManager
             }
             a.print();
         }
+
+        for(int i = 0; i < numAgents; i++)
+        {
+            eventList.add(new Event(agentList.get(i).getIntermovement(), 
+                "move", agentList.get(i)));              
+
+        }
+        for(int i = 0; i < numAgents; i++) 
+            eventList.poll().getAgent().print();
+        
 
         this.createWindow();
 //        this.run();
