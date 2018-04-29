@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Landscape
 {
-    private int MAX_DIMENSION = 40;
+    private int MAX_DIMENSION;
     private Cell [][] landscape; // instance of the landscape 2x2 array
 
     /*	public Landscape()
@@ -13,11 +13,13 @@ public class Landscape
     public Landscape(int row, int col)
     {
         landscape = new Cell[row][col];
-
+        MAX_DIMENSION = row;
         for(int i = 0; i < row; i++) {
             for(int j = 0; j < col; j++) {
-                landscape[i][j] = new Cell(getGaussian(i,j), 1, false, 0);
+                landscape[i][j] = new Cell(getGaussian(i,j), 1, false, getGaussian(i,j), i, j);
+  //              System.out.print(getCellAt(i, j).getCapacity() + " ");
             }
+//            System.out.println();
         }
     }
 
@@ -32,7 +34,7 @@ public class Landscape
     private double gaussianHelper(double x, double y) {
         double thetaX = 0.4 * MAX_DIMENSION;
         double thetaY = 0.4 * MAX_DIMENSION;
-        return Math.pow(4.0, - ((x/thetaX)*(x/thetaX)) - ((y/thetaY)*(y/thetaY)));
+        return 4.0 * Math.exp(- ((x/thetaX)*(x/thetaX)) - ((y/thetaY)*(y/thetaY)));
     }
 
     public Cell getCellAt(int row, int col)

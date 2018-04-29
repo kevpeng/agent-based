@@ -37,7 +37,7 @@ public class Agent
         this.maxAge = getRandomDouble(60,100);
         this.timeInSystem = 0.0;
     }
-
+/*
     Agent(String id, double time)
     {
         // initialize id/position
@@ -53,7 +53,7 @@ public class Agent
         this.maxAge = time +getRandomDouble(60,100);
 
     }
-
+*/
     // helper function to get a double
     public static double getRandomDouble(double min, double max) {
         return min + (rand.nextDouble() * (max - min));
@@ -78,15 +78,15 @@ public class Agent
 
 
     public void print() {
-        System.out.println("ID: " + this.getID());
-        System.out.println("Location: " + this.getRow() + ", " + this.getCol());
-        System.out.println("Vision: " + this.getVision());
-        System.out.println("Current Wealth: " + this.getWealth());
-        System.out.println("Metabolic rate: " + this.getMetabolicRate());
+        System.out.println("ID:                 " + this.getID());
+        System.out.println("Location:           " + this.getRow() + ", " + this.getCol());
+        System.out.println("Vision:             " + this.getVision());
+        System.out.println("Current Wealth:     " + this.getWealth());
+        System.out.println("Metabolic rate:     " + this.getMetabolicRate());
         System.out.println("Intermovement time: " + this.getIntermovement());
-        System.out.println("Time in system: " + this.getTimeInSystem());
-        System.out.println("Current Age: " + this.getCurrentAge());
-        System.out.println("Max age: " + this.getMaxAge());
+        System.out.println("Time in system:     " + this.getTimeInSystem());
+        System.out.println("Current Age:        " + this.getCurrentAge());
+        System.out.println("Max age:            " + this.getMaxAge());
         System.out.println();
     }
 
@@ -108,17 +108,20 @@ public class Agent
     public void setNewTime() { 
         this.timeInSystem += this.intermovement; 
         this.intermovement = getNextTime(); 
+        this.currentAge = this.timeInSystem;
     }
+
 
     // move agent to new 
     public void move(Landscape land)
     {
+        
         Cell C = look(this.getVision(), land);                     // check for place to go
+        System.out.println("AFTER XXX CELL LOCATION: " + C.getRow() + "," + C.getCol());
         this.setRowCol(C.getRow(), C.getCol());                    // move to that location
         land.getCellAt(C.getRow(), C.getCol()).setOccupancy(true); // set the landscape's cell to occupied
         this.collect(land.getCellAt(C.getRow(), C.getCol()));      // collect resources
         this.setNewTime();                                         // update timer for the agent
-
     }
 
     public Cell look(int vision, Landscape landscape)
@@ -126,23 +129,25 @@ public class Agent
         // max = current cell
         Cell max = landscape.getCellAt(this.row, this.col);
 
+        System.out.println("IN LOOK FUNCTION");
+        System.out.println(max.getRow() + " " + max.getCol());
         int n = landscape.getMaxDimension();
         for(int i = 1; i <= vision; i++) { // run the vision algorithm.
 
             // Temp looks for the max valid cell
-            Cell temp = landscape.getCellAt(this.row, helperPlus(this.col + i, n));           
+            Cell temp = landscape.getCellAt(this.row, helperPlus(this.col, n, i));           
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
 
-            temp = landscape.getCellAt(this.row, helperMinus(this.col - i, n)); 
+            temp = landscape.getCellAt(this.row, helperMinus(this.col, n, i)); 
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
 
-            temp = landscape.getCellAt(helperPlus(this.row + i, n), this.col); 
+            temp = landscape.getCellAt(helperPlus(this.row, n, i), this.col); 
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
 
-            temp = landscape.getCellAt(helperMinus(this.row - i, n), this.col);
+            temp = landscape.getCellAt(helperMinus(this.row, n, i), this.col);
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
         }
@@ -150,12 +155,12 @@ public class Agent
     }
 
     // calculates where the cell looks positively (donut array)
-    public int helperPlus(int x, int max)
-    { return ((x + this.vision + max) % max ); }
+    public int helperPlus(int x, int max, int vision)
+    { return ((x + vision + max) % max ); }
 
     // calculates where the cell looks negatively (donut array)
-    public int helperMinus(int x, int max)
-    { return ((x - this.vision + max) % max ); }
+    public int helperMinus(int x, int max, int vision)
+    { return ((x - vision + max) % max ); }
 
 }
 

@@ -22,18 +22,20 @@ public class Cell
         occupied = false;
         resourceLevel = 0;
         */
-        occupied = false;
-        resourceLevel = 0;
+        this.occupied = false;
+        this.resourceLevel = 0;
     }
 
     // constructor that takes in stuff
     public Cell(double resourceCap, double resourceRate,
-            boolean occupancy, double resourceLev)
+            boolean occupancy, double resourceLev, int row, int col)
     {
-        RESOURCE_CAP = resourceCap;
-        REGROWTH_RATE = resourceRate;
-        occupied = occupancy;
-        resourceLevel = resourceLev;
+        this.RESOURCE_CAP = resourceCap;
+        this.REGROWTH_RATE = resourceRate;
+        this.occupied = occupancy;
+        this.resourceLevel = resourceLev;
+        this.row = row;
+        this.col = col;
     }
 
     // getters

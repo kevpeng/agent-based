@@ -26,7 +26,7 @@ class SimulationManager extends WindowManager
     //* public SimulationManager(int gridSize, int numAgents, int initialSeed)
     //======================================================================
     public SimulationManager(int gridSize, int numAgents, int initialSeed,
-	double maxTime)
+            double maxTime)
     {
         super("Sugarscape", 500, 500);  // name, window width, window height
 
@@ -58,23 +58,31 @@ class SimulationManager extends WindowManager
                 }
                 // continue until agent is places properly
             }
-            a.print();
+        //    a.print();
         }
 
         for(int i = 0; i < numAgents; i++)
         {
-			//also this code doesn't make sense
+            //also this code doesn't make sense
             //why access it twice
-			Agent x = agentList.get(i);
-			eventList.add(new Event(x.getIntermovement(), 
-                "move", x));
+            Agent x = agentList.get(i);
+            String type = "";
+            if(x.getCurrentAge() + x.getIntermovement() > x.getMaxAge())
+            { type = "death"; }
+            else 
+            { type = "move";  }
+
+            eventList.add(new Event(x.getIntermovement(), 
+                        type, x));
         }
-        for(int i = 0; i < numAgents; i++) 
-            eventList.poll().getAgent().print();
-        
+       // for(int i = 0; i < numAgents; i++) 
+       // {
+         //   eventList.poll().getAgent().print();
+           // System.out.println("event time: " + e    
+       // }
 
         this.createWindow();
-//        this.run(maxTime);
+        this.run(maxTime);
     }
 
     //======================================================================
@@ -100,41 +108,48 @@ class SimulationManager extends WindowManager
     {
         // bogus simulation code below...
         /* for (int t = 1; t <= 100; t++)
+           {
+           this.time = t;
+           for (int i = 0; i < agentList.size(); i++)
+           {
+           Agent a = agentList.get(i);
+
+           int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+           int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+
+        // we should check to make sure the cell isn't already occupied!
+        a.setRowCol(row, col); 
+           }
+           canvas.repaint();
+           try { Thread.sleep(500); } catch (Exception e) {}
+           } */
+            canvas.repaint();
+            try { Thread.sleep(500); } catch (Exception de) {}
+        while(this.time < 10)
         {
-            this.time = t;
-            for (int i = 0; i < agentList.size(); i++)
+            Event e = eventList.poll(); // current event
+            this.time += e.getTime();    // get time of the current event
+            System.out.println("************ CURRENT SIM TIME: " + this.time);
+            if(e.getType().equals("move")) // move the thing 
             {
-                Agent a = agentList.get(i);
-
-                int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-                int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-
-                // we should check to make sure the cell isn't already occupied!
-                a.setRowCol(row, col); 
+                e.getAgent().print();
+                e.getAgent().move(landscape);
+                e.setTime(e.getAgent().getIntermovement());
+                eventList.add(e);
+                //schedule next event for this agent
+            }
+            else if(e.getType().equals("DEATH"))
+            {
+                // new, replacement agent has 
+                Agent a = new Agent(e.getAgent().getID());
+                //kill
+                //e.getAgent.
+                //create new
             }
             canvas.repaint();
-            try { Thread.sleep(500); } catch (Exception e) {}
-        } */
-		while(this.time < maxTime)
-		{
-			Event e = eventList.poll();
-			this.time = e.getTime();
-			if(e.getType().equals("move"))
-			{
-				e.getAgent().move(landscape);
-				//schedule next event for this agent
-			}
-			else if(e.getType().equals("DEATH"))
-			{
-				//kill
-				//e.getAgent.
-				//create new
-			}
-			else
-			{
-				//something
-			}
-		}
+            try { Thread.sleep(500); } catch (Exception de) {}
+        }
+
     }
 
 
@@ -147,6 +162,6 @@ class SimulationManager extends WindowManager
     //======================================================================
     public static void main(String[] args)
     {
-        new SimulationManager(40, 400, 8675309, 10);
+        new SimulationManager(40, 1, 8675309, 10);
     }
 }
