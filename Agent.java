@@ -1,9 +1,10 @@
+package abs;
 import java.util.*;
 
 public class Agent
 {
     // initialize rand
-    Random rand = new Random(8675309);
+    static Random rand = new Random(8675309);
     
     // identifier for the agent
     private String id; 
