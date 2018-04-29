@@ -3,3 +3,6 @@ main:
 
 run:
 	java SimulationManager
+
+clean:
+	rm -rf *.class

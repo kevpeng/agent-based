@@ -38,10 +38,9 @@ public class Event
 
 class EventComparator implements Comparator<Event>
 {
-<<<<<<< HEAD
 	public int compare(Event one, Event two)
 	{
-		if(one.getTtime() < two.getTime())
+		if(one.getTime() < two.getTime())
 		{
 			return -1;
 		}
@@ -51,9 +50,8 @@ class EventComparator implements Comparator<Event>
 		}
 		return 0;
 	}
-}
-=======
-    public int compare(Event one, Event two)
+}  
+/*public int compare(Event one, Event two)
     {
         if(one.getTime() < two.getTime())
         {
@@ -66,7 +64,7 @@ class EventComparator implements Comparator<Event>
         return 0;
     }
 }
-
+*/
 
 
 
@@ -109,4 +107,3 @@ this.agent = agent;
 }
    }	
    */
->>>>>>> kevin's-intellij
