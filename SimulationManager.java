@@ -25,7 +25,8 @@ class SimulationManager extends WindowManager
     //======================================================================
     //* public SimulationManager(int gridSize, int numAgents, int initialSeed)
     //======================================================================
-    public SimulationManager(int gridSize, int numAgents, int initialSeed)
+    public SimulationManager(int gridSize, int numAgents, int initialSeed,
+	double maxTime)
     {
         super("Sugarscape", 500, 500);  // name, window width, window height
 
@@ -73,7 +74,7 @@ class SimulationManager extends WindowManager
         
 
         this.createWindow();
-//        this.run();
+//        this.run(maxTime);
     }
 
     //======================================================================
@@ -95,7 +96,7 @@ class SimulationManager extends WindowManager
     //* public void run()
     //* This is where your main simulation event engine code should go...
     //======================================================================
-    public void run()
+    public void run(double maxTime)
     {
         // bogus simulation code below...
         /* for (int t = 1; t <= 100; t++)
@@ -114,7 +115,26 @@ class SimulationManager extends WindowManager
             canvas.repaint();
             try { Thread.sleep(500); } catch (Exception e) {}
         } */
-		
+		while(this.time < maxTime)
+		{
+			Event e = eventList.poll();
+			this.time = e.getTime();
+			if(e.getType.equals("move"))
+			{
+				e.getAgent.move(landscape);
+				//schedule next event for this agent
+			}
+			else if(e.getType.equals("DEATH"))
+			{
+				//kill
+				//e.getAgent.
+				//create new
+			}
+			else
+			{
+				//something
+			}
+		}
     }
 
 
@@ -127,6 +147,6 @@ class SimulationManager extends WindowManager
     //======================================================================
     public static void main(String[] args)
     {
-        new SimulationManager(40, 400, 8675309);
+        new SimulationManager(40, 400, 8675309, 10);
     }
 }
