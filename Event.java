@@ -1,3 +1,5 @@
+import java.util.Comparator;
+
 public class Event 
 {
 	private double time;
@@ -33,3 +35,19 @@ public class Event
 		this.agent = agent;
 	}
 }	
+
+class EventComparator implements Comparator<Event>
+{
+	public int compare(Event one, Event two)
+	{
+		if(one.getTtime() < two.getTime())
+		{
+			return -1;
+		}
+		if(one.getTime() > two.getTime())
+		{
+			return 1;
+		}
+		return 0;
+	}
+}
