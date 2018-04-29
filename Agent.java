@@ -38,7 +38,7 @@ public class Agent
         this.currentAge = 0;
         this.maxAge = getRandomDouble(60,100);
         this.timeInSystem = 0.0;
-        this.deathage=maxAge;
+        this.deathage=Math.min(maxAge,(wealth/metabolicRate));
         this.smallTime = Math.min(intermovement,deathage);
     }
 
@@ -46,7 +46,6 @@ public class Agent
     {
         // initialize id/position
         this.id = id;
-
 
         // initialize characteristics
         this.vision = rand.nextInt(6) + 1;
