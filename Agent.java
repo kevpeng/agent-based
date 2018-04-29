@@ -1,4 +1,3 @@
-package abs;
 import java.util.*;
 
 public class Agent
