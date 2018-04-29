@@ -20,6 +20,8 @@ public class Agent
     private double timeInSystem;
     private double currentAge;
     private double maxAge;
+    private double deathage;
+    private double smallTime 
 
     // constructor
     Agent(String id)
@@ -36,6 +38,26 @@ public class Agent
         this.currentAge = 0;
         this.maxAge = getRandomDouble(60,100);
         this.timeInSystem = 0.0;
+        this.deathage=maxAge;
+        this.smallTime = Math.min(intermovement,deathage);
+    }
+
+     Agent(String id, double time)
+    {
+        // initialize id/position
+        this.id = id;
+
+
+        // initialize characteristics
+        this.vision = rand.nextInt(6) + 1;
+        this.wealth = getRandomDouble(5, 25);
+        this.metabolicRate = getRandomDouble(1,4);
+        this.intermovement = time + getNextTime();
+        this.currentAge = time;
+        this.maxAge = time +getRandomDouble(60,100);
+        this.deathage = Math.min(maxAge,time + (wealth / metabolicRate));
+        this.smallTime = Math.min(intermovement, deathage);
+
     }
 
     // helper function to get a double
@@ -59,6 +81,7 @@ public class Agent
     public double getCurrentAge() { return this.currentAge; }
     public double getMaxAge() { return this.maxAge; }
     public double getTimeInSystem() { return this.timeInSystem; }
+    
 
     public void print() {
         System.out.println("ID: " + this.getID());
@@ -81,11 +104,15 @@ public class Agent
         this.col = col;
     }
 
-    // getting more wealth!!
-    public void collect(Cell C) {
+     public void collect(Cell C) {
         this.wealth += C.getResource();
         C.setResource(0);
+        this.intermovement = smallTime + getNextTime();
+        this.deathTime = smallTime + (wealth / metabolicRate));
+        this.deathTime = Math.min(this.deathTime, maxAge);
+        this.smallTime = Math.min(intermovement, deathTime);
     }
+
 
     // set new intermovement time
     public void setNewTime() { 
@@ -100,7 +127,7 @@ public class Agent
         this.setRowCol(C.getRow(), C.getCol());                    // move to that location
         land.getCellAt(C.getRow(), C.getCol()).setOccupancy(true); // set the landscape's cell to occupied
         this.collect(land.getCellAt(C.getRow(), C.getCol()));      // collect resources
-         this.setNewTime();                                         // update timer for the agent
+        this.setNewTime();                                         // update timer for the agent
         
     }
 
@@ -141,3 +168,4 @@ public class Agent
     { return ((x - this.vision + max) % max ); }
 
 }
+
