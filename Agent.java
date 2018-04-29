@@ -2,6 +2,9 @@ import java.util.*;
 
 public class Agent
 {
+    // initialize rand
+    Random rand = new Random(8675309);
+    
     // identifier for the agent
     private String id; 
     
@@ -23,23 +26,23 @@ public class Agent
         // initialize id/position
         this.id = id;
 
-        // initialize rand
-        Random rand = new Random();
 
         // initialize characteristics
         this.vision = rand.nextInt(6) + 1;
         this.wealth = getRandomDouble(5, 25);
         this.metabolicRate = getRandomDouble(1,4);
-        this.intermovement = Math.exp(1);
+        this.intermovement = getNextTime();
         this.currentAge = 0;
         this.maxAge = getRandomDouble(60,100);
     }
 
     // helper function to get a double
     public static double getRandomDouble(double min, double max) {
-                Random r = new Random();
-
-        return min + (r.nextDouble() * (max - min));
+        return min + (rand.nextDouble() * (max - min));
+    }
+    
+    public static double getNextTime() {
+        return Math.log(1 - rand.nextDouble())/(-1);
     }
 
 

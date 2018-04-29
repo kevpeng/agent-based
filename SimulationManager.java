@@ -52,6 +52,7 @@ class SimulationManager extends WindowManager
                 }
                 // continue until agent is places properly
             }
+            a.print();
         }
 
         this.createWindow();
