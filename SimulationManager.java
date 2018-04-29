@@ -6,11 +6,11 @@ import java.util.Random;
 class SimulationManager extends WindowManager
 {
     protected ArrayList<Agent> agentList; 
-        // A list of all agents in the simulation; this is declared as
-        // protected because we access it directly from within AgentCanvas.  
-        // Why?  Because we only access it to draw the agents, and given 
-        // that the list may be large, it doesn't make sense to
-        // make a copy and return that copy to AgentCanvas.
+    // A list of all agents in the simulation; this is declared as
+    // protected because we access it directly from within AgentCanvas.  
+    // Why?  Because we only access it to draw the agents, and given 
+    // that the list may be large, it doesn't make sense to
+    // make a copy and return that copy to AgentCanvas.
 
     protected Landscape landscape;
     protected int gridSize;
@@ -41,16 +41,22 @@ class SimulationManager extends WindowManager
             Agent a = new Agent("agent " + agentList.size());
             agentList.add(a);
 
-            int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-            int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-
-            // we should check to make sure the cell isn't already occupied!
-
-            a.setRowCol(row, col); 
+            // to do: check valid
+            while(true) {
+                int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+                int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+                if(landscape.getCellAt(row, col).getOccupancy() == false)
+                { 
+                    a.setRowCol(row, col);
+                    break; 
+                }
+                // continue until agent is places properly
+            }
+            a.print();
         }
 
         this.createWindow();
-        this.run();
+//        this.run();
     }
 
     //======================================================================
