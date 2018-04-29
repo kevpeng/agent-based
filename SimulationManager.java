@@ -62,9 +62,11 @@ class SimulationManager extends WindowManager
 
         for(int i = 0; i < numAgents; i++)
         {
-            eventList.add(new Event(agentList.get(i).getIntermovement(), 
-                "move", agentList.get(i)));              
-
+			//also this code doesn't make sense
+            //why access it twice
+			Agent x = agentList.get(i);
+			eventList.add(new Event(x.getIntermovement(), 
+                "move", x));
         }
         for(int i = 0; i < numAgents; i++) 
             eventList.poll().getAgent().print();
@@ -96,7 +98,7 @@ class SimulationManager extends WindowManager
     public void run()
     {
         // bogus simulation code below...
-        for (int t = 1; t <= 100; t++)
+        /* for (int t = 1; t <= 100; t++)
         {
             this.time = t;
             for (int i = 0; i < agentList.size(); i++)
@@ -111,7 +113,8 @@ class SimulationManager extends WindowManager
             }
             canvas.repaint();
             try { Thread.sleep(500); } catch (Exception e) {}
-        }
+        } */
+		
     }
 
 
