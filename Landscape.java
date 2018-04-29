@@ -18,7 +18,7 @@ public class Landscape
 
         for(int i = 0; i < row; i++) {
             for(int j = 0; j < col; j++) {
-                landscape[i][j] = new Cell(getGaussian(i,j), 0.75, false, 4);
+                landscape[i][j] = new Cell(getGaussian(i,j), 1, false, 0);
             }
         }
     }
