@@ -38,10 +38,10 @@ public class Agent
         this.currentAge = 0;
         this.maxAge = getRandomDouble(60,100);
         this.timeInSystem = 0.0;
-        this.deathage=Math.min(maxAge,(wealth/metabolicRate));
-        this.smallTime = Math.min(intermovement,deathage);
+
     }
 
+'''
      Agent(String id, double time)
     {
         // initialize id/position
@@ -58,6 +58,7 @@ public class Agent
         this.smallTime = Math.min(intermovement, deathage);
 
     }
+'''    
 
     // helper function to get a double
     public static double getRandomDouble(double min, double max) {
@@ -106,10 +107,12 @@ public class Agent
      public void collect(Cell C) {
         this.wealth += C.getResource();
         C.setResource(0);
-        this.intermovement = smallTime + getNextTime();
+        
+      '''  this.intermovement = smallTime + getNextTime();
         this.deathTime = smallTime + (wealth / metabolicRate));
         this.deathTime = Math.min(this.deathTime, maxAge);
         this.smallTime = Math.min(intermovement, deathTime);
+        '''
     }
 
 
