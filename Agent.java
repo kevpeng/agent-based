@@ -17,6 +17,7 @@ public class Agent
     private double wealth;
     private double metabolicRate;
     private double intermovement;
+    private double timeInSystem;
     private double currentAge;
     private double maxAge;
 
@@ -34,6 +35,7 @@ public class Agent
         this.intermovement = getNextTime();
         this.currentAge = 0;
         this.maxAge = getRandomDouble(60,100);
+        this.timeInSystem = 0.0;
     }
 
     // helper function to get a double
@@ -56,6 +58,7 @@ public class Agent
     public double getIntermovement() { return this.intermovement; }
     public double getCurrentAge() { return this.currentAge; }
     public double getMaxAge() { return this.maxAge; }
+    public double getTimeInSystem() { return this.timeInSystem; }
 
     public void print() {
         System.out.println("ID: " + this.getID());
@@ -64,6 +67,7 @@ public class Agent
         System.out.println("Current Wealth: " + this.getWealth());
         System.out.println("Metabolic rate: " + this.getMetabolicRate());
         System.out.println("Intermovement time: " + this.getIntermovement());
+        System.out.println("Time in system: " + this.getTimeInSystem());
         System.out.println("Current Age: " + this.getCurrentAge());
         System.out.println("Max age: " + this.getMaxAge());
         System.out.println();
@@ -84,7 +88,10 @@ public class Agent
     }
 
     // set new intermovement time
-    public void setNewTime() { this.intermovement = Math.exp(1); }
+    public void setNewTime() { 
+        this.timeInSystem += this.intermovement; 
+        this.intermovement = getNextTime(); 
+    }
 
     // move agent to new 
     public void move(Landscape land)
@@ -99,26 +106,28 @@ public class Agent
 
     public Cell look(int vision, Landscape landscape)
     {
-        Cell max = new Cell();
+        // max = current cell
+        Cell max = landscape.getCellAt(this.row, this.col);
+
         int n = landscape.getMaxDimension();
         for(int i = 1; i <= vision; i++) { // run the vision algorithm.
 
             // Temp looks for the max valid cell
-            Cell temp = landscape.getCellAt(this.row, helperPlus(this.col, n));           
+            Cell temp = landscape.getCellAt(this.row, helperPlus(this.col + i, n));           
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
-            { max = landscape.getCellAt(this.row, helperPlus(this.col, n)); }
+            { max = temp; }
             
-            temp = landscape.getCellAt(this.row, helperMinus(this.col, n)); 
+            temp = landscape.getCellAt(this.row, helperMinus(this.col - 1, n)); 
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
-            { max = landscape.getCellAt(this.row, helperMinus(this.col, n)); }
+            { max = temp; }
             
-            temp = landscape.getCellAt(helperPlus(this.row, n), this.col); 
+            temp = landscape.getCellAt(helperPlus(this.row + 1, n), this.col); 
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
-            { max = landscape.getCellAt(  helperPlus(this.row, n), this.col); }
+            { max = temp; }
             
-            temp = landscape.getCellAt(helperMinus(this.row, n), this.col);
+            temp = landscape.getCellAt(helperMinus(this.row - 1, n), this.col);
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
-            { max = landscape.getCellAt(helperMinus(this.row, n), this.col); }
+            { max = temp; }
         }
         return max; // returns max valid cell
     }
