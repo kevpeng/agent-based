@@ -51,6 +51,7 @@ public class Cell
     // mutators
     public void updateCell(double time)   { timeLastUpdated = time; }
     public void regrowCell(double time)   {  
-        resourceLevel = Math.min(RESOURCE_CAP, resourceLevel + ((time - timeLastUpdated) * REGROWTH_RATE));
+        resourceLevel = Math.min(RESOURCE_CAP, resourceLevel + 
+                ((time - timeLastUpdated) * REGROWTH_RATE));
     }
 }

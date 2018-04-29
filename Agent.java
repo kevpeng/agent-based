@@ -20,8 +20,6 @@ public class Agent
     private double timeInSystem;
     private double currentAge;
     private double maxAge;
-    private double deathage;
-    private double smallTime 
 
     // constructor
     Agent(String id)
@@ -38,13 +36,13 @@ public class Agent
         this.currentAge = 0;
         this.maxAge = getRandomDouble(60,100);
         this.timeInSystem = 0.0;
-
     }
 
      Agent(String id, double time)
     {
         // initialize id/position
         this.id = id;
+
 
         // initialize characteristics
         this.vision = rand.nextInt(6) + 1;
@@ -53,11 +51,8 @@ public class Agent
         this.intermovement = time + getNextTime();
         this.currentAge = time;
         this.maxAge = time +getRandomDouble(60,100);
-        this.deathage = Math.min(maxAge,time + (wealth / metabolicRate));
-        this.smallTime = Math.min(intermovement, deathage);
 
     }
-'''    
 
     // helper function to get a double
     public static double getRandomDouble(double min, double max) {
@@ -106,12 +101,6 @@ public class Agent
      public void collect(Cell C) {
         this.wealth += C.getResource();
         C.setResource(0);
-        
-      '''  this.intermovement = smallTime + getNextTime();
-        this.deathTime = smallTime + (wealth / metabolicRate));
-        this.deathTime = Math.min(this.deathTime, maxAge);
-        this.smallTime = Math.min(intermovement, deathTime);
-        '''
     }
 
 
@@ -145,15 +134,15 @@ public class Agent
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
             
-            temp = landscape.getCellAt(this.row, helperMinus(this.col - 1, n)); 
+            temp = landscape.getCellAt(this.row, helperMinus(this.col - i, n)); 
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
             
-            temp = landscape.getCellAt(helperPlus(this.row + 1, n), this.col); 
+            temp = landscape.getCellAt(helperPlus(this.row + i, n), this.col); 
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
             
-            temp = landscape.getCellAt(helperMinus(this.row - 1, n), this.col);
+            temp = landscape.getCellAt(helperMinus(this.row - i, n), this.col);
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
         }
