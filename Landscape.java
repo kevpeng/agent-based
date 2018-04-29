@@ -1,5 +1,3 @@
-package abs;
-
 import java.util.Random;
 
 public class Landscape
