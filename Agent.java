@@ -4,14 +4,14 @@ public class Agent
 {
     // initialize rand
     static Random rand = new Random(8675309);
-    
+
     // identifier for the agent
     private String id; 
-    
+
     // position variables
     private int row;
     private int col;
-    
+
     // characteristics for an agent
     private int vision;
     private double wealth;
@@ -38,8 +38,7 @@ public class Agent
         this.timeInSystem = 0.0;
     }
 
-'''
-     Agent(String id, double time)
+    Agent(String id, double time)
     {
         // initialize id/position
         this.id = id;
@@ -59,7 +58,7 @@ public class Agent
     public static double getRandomDouble(double min, double max) {
         return min + (rand.nextDouble() * (max - min));
     }
-    
+
     public static double getNextTime() {
         return Math.log(1 - rand.nextDouble())/(-1);
     }
@@ -76,7 +75,7 @@ public class Agent
     public double getCurrentAge() { return this.currentAge; }
     public double getMaxAge() { return this.maxAge; }
     public double getTimeInSystem() { return this.timeInSystem; }
-    
+
 
     public void print() {
         System.out.println("ID: " + this.getID());
@@ -92,14 +91,14 @@ public class Agent
     }
 
     // simple mutator methods below
-    
+
     // Update the position!!
     public void setRowCol(int row, int col) {
         this.row = row;
         this.col = col;
     }
 
-     public void collect(Cell C) {
+    public void collect(Cell C) {
         this.wealth += C.getResource();
         C.setResource(0);
     }
@@ -119,7 +118,7 @@ public class Agent
         land.getCellAt(C.getRow(), C.getCol()).setOccupancy(true); // set the landscape's cell to occupied
         this.collect(land.getCellAt(C.getRow(), C.getCol()));      // collect resources
         this.setNewTime();                                         // update timer for the agent
-        
+
     }
 
     public Cell look(int vision, Landscape landscape)
@@ -134,15 +133,15 @@ public class Agent
             Cell temp = landscape.getCellAt(this.row, helperPlus(this.col + i, n));           
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
-            
+
             temp = landscape.getCellAt(this.row, helperMinus(this.col - i, n)); 
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
-            
+
             temp = landscape.getCellAt(helperPlus(this.row + i, n), this.col); 
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
-            
+
             temp = landscape.getCellAt(helperMinus(this.row - i, n), this.col);
             if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
             { max = temp; }
