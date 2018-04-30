@@ -2,169 +2,256 @@ import java.util.*;
 
 public class Agent
 {
-    // initialize rand
-    static Random rand = new Random(8675309);
-    
-    // identifier for the agent
-    private String id; 
-    
-    // position variables
-    private int row;
-    private int col;
-    
-    // characteristics for an agent
-    private int vision;
-    private double wealth;
-    private double metabolicRate;
-    private double intermovement;
-    private double timeInSystem;
-    private double currentAge;
-    private double maxAge;
-    private double deathage;
-    private double smallTime 
-
-    // constructor
-    Agent(String id)
-    {
-        // initialize id/position
-        this.id = id;
-
-
-        // initialize characteristics
-        this.vision = rand.nextInt(6) + 1;
-        this.wealth = getRandomDouble(5, 25);
-        this.metabolicRate = getRandomDouble(1,4);
-        this.intermovement = getNextTime();
-        this.currentAge = 0;
-        this.maxAge = getRandomDouble(60,100);
-        this.timeInSystem = 0.0;
-        this.deathage=Math.min(maxAge,(wealth/metabolicRate));
-        this.smallTime = Math.min(intermovement,deathage);
-    }
-
-     Agent(String id, double time)
-    {
-        // initialize id/position
-        this.id = id;
-
-        // initialize characteristics
-        this.vision = rand.nextInt(6) + 1;
-        this.wealth = getRandomDouble(5, 25);
-        this.metabolicRate = getRandomDouble(1,4);
-        this.intermovement = time + getNextTime();
-        this.currentAge = time;
-        this.maxAge = time +getRandomDouble(60,100);
-        this.deathage = Math.min(maxAge,time + (wealth / metabolicRate));
-        this.smallTime = Math.min(intermovement, deathage);
-
-    }
-
-    // helper function to get a double
-    public static double getRandomDouble(double min, double max) {
-        return min + (rand.nextDouble() * (max - min));
-    }
-    
-    public static double getNextTime() {
-        return Math.log(1 - rand.nextDouble())/(-1);
-    }
-
-
-    // simple accessor methods below
-    public String getID()  { return this.id;  }
-    public int    getRow() { return this.row; }
-    public int    getCol() { return this.col; }
-    public int    getVision() { return this.vision; }
-    public double getWealth() { return this.wealth; }
-    public double getMetabolicRate() { return this.metabolicRate; }
-    public double getIntermovement() { return this.intermovement; }
-    public double getCurrentAge() { return this.currentAge; }
-    public double getMaxAge() { return this.maxAge; }
-    public double getTimeInSystem() { return this.timeInSystem; }
-    
-
-    public void print() {
-        System.out.println("ID: " + this.getID());
-        System.out.println("Location: " + this.getRow() + ", " + this.getCol());
-        System.out.println("Vision: " + this.getVision());
-        System.out.println("Current Wealth: " + this.getWealth());
-        System.out.println("Metabolic rate: " + this.getMetabolicRate());
-        System.out.println("Intermovement time: " + this.getIntermovement());
-        System.out.println("Time in system: " + this.getTimeInSystem());
-        System.out.println("Current Age: " + this.getCurrentAge());
-        System.out.println("Max age: " + this.getMaxAge());
-        System.out.println();
-    }
-
-    // simple mutator methods below
-    
-    // Update the position!!
-    public void setRowCol(int row, int col) {
-        this.row = row;
-        this.col = col;
-    }
-
-     public void collect(Cell C) {
-        this.wealth += C.getResource();
-        C.setResource(0);
-        this.intermovement = smallTime + getNextTime();
-        this.deathTime = smallTime + (wealth / metabolicRate));
-        this.deathTime = Math.min(this.deathTime, maxAge);
-        this.smallTime = Math.min(intermovement, deathTime);
-    }
-
-
-    // set new intermovement time
-    public void setNewTime() { 
-        this.timeInSystem += this.intermovement; 
-        this.intermovement = getNextTime(); 
-    }
-
-    // move agent to new 
-    public void move(Landscape land)
-    {
-        Cell C = look(this.getVision(), land);                     // check for place to go
-        this.setRowCol(C.getRow(), C.getCol());                    // move to that location
-        land.getCellAt(C.getRow(), C.getCol()).setOccupancy(true); // set the landscape's cell to occupied
-        this.collect(land.getCellAt(C.getRow(), C.getCol()));      // collect resources
-        this.setNewTime();                                         // update timer for the agent
-        
-    }
-
-    public Cell look(int vision, Landscape landscape)
-    {
-        // max = current cell
-        Cell max = landscape.getCellAt(this.row, this.col);
-
-        int n = landscape.getMaxDimension();
-        for(int i = 1; i <= vision; i++) { // run the vision algorithm.
-
-            // Temp looks for the max valid cell
-            Cell temp = landscape.getCellAt(this.row, helperPlus(this.col + i, n));           
-            if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
-            { max = temp; }
-            
-            temp = landscape.getCellAt(this.row, helperMinus(this.col - 1, n)); 
-            if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
-            { max = temp; }
-            
-            temp = landscape.getCellAt(helperPlus(this.row + 1, n), this.col); 
-            if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
-            { max = temp; }
-            
-            temp = landscape.getCellAt(helperMinus(this.row - 1, n), this.col);
-            if( temp.getResource() > max.getResource() && temp.getOccupancy() == false ) 
-            { max = temp; }
-        }
-        return max; // returns max valid cell
-    }
-
-    // calculates where the cell looks positively (donut array)
-    public int helperPlus(int x, int max)
-    { return ((x + this.vision + max) % max ); }
-
-    // calculates where the cell looks negatively (donut array)
-    public int helperMinus(int x, int max)
-    { return ((x - this.vision + max) % max ); }
-
+	private int row;
+	private int col;
+	private String id;
+	
+	public static final int maxAge = 100;
+	private int vision;
+	private double metaRate;
+	private double resources;
+	private double intermovement;
+	private double age;
+	private double deathTime;
+	
+	static Random rng = new Random(1234567);
+	
+	Agent(String id)
+	{
+		this.id = id;
+		this.vision = (int) getUniform(1, 6, true);
+		this.metaRate = getUniform(1, 4, false);
+		this.resources = getUniform(5, 25, false);
+		this.age = getUniform(60, 100, false);
+		this.intermovement = getNewIntermovement();
+	}
+	
+	/* Agent(String id, int row, int col, int vision, double metRate, 
+		double initialResources, double intermovement, double age)
+	{
+		this.vision = vision;
+		this.metaRate = metRate;
+		this.resources = initialResources;
+		this.intermovement = intermovement;
+		this.age = age;
+	} */
+	
+	private double getUniform(int lower, int upper, boolean isVision)
+	{
+		if(isVision == true)
+		{
+			double x = (double) (rng.nextDouble() * (upper + 1 - lower)) + lower;
+			return (int) x;
+		}
+		double x = (double) (rng.nextDouble() * (upper - lower)) + lower;
+		return x;
+	}
+	
+	public static double getNewIntermovement()
+	{
+		return  Math.log(1 - rng.nextDouble())/(-1);
+	}
+	
+	/* Getter Methods */
+	public String getId()
+	{
+		return this.id;
+	}
+	
+	public int getRow()
+	{
+		return this.row;
+	}
+	
+	public int getCol()
+	{
+		return this.col;
+	}
+	
+	public int getVision()
+	{
+		return this.vision;
+	}
+	
+	public double getMetaRate()
+	{
+		return this.metaRate;
+	}
+	
+	public double getResourceLevel()
+	{
+		return this.resources;
+	}
+	
+	public double getIntermovement()
+	{
+		return this.intermovement;
+	}
+	
+	public double getAge()
+	{
+		return this.age;
+	}
+	
+	public double getDeathTime()
+	{
+		return this.deathTime;
+	}
+	
+	/* Setter Methods */
+	public void setResources(double x)
+	{
+		this.resources = x;
+	}
+	
+	public void setRow(int row)
+	{
+		this.row = row;
+	}
+	
+	public void setCol(int col)
+	{
+		this.col = col;
+	}
+	
+	public void setIntermovement(double intermovement)
+	{
+		this.intermovement = intermovement;
+	}
+	
+	public void setAge(double age)
+	{
+		this.age = age;
+	}
+	
+	public void setRowCol(int row, int col)
+	{
+		this.row = row;
+		this.col = col;
+	}
+	
+	public void setDeathTime(double t)
+	{
+		this.deathTime = t;
+	}
+	
+	/* Prints information about agent */
+	public void print()
+	{
+		System.out.println("ID: " + this.id);
+		System.out.println("Location: (" + this.getRow() + ", " + this.getCol() + ")");
+		System.out.println("Vision: " + this.vision);
+		System.out.println("Metabolic Rate: " + this.metaRate);
+		System.out.println("Current Resources: " + this.resources);
+		System.out.println("Age: " + this.age);
+		System.out.println("Intermovement: " + this.intermovement + "\n");
+	}
+		
+	public void move(SimulationManager manager)
+	{
+		//Agent's Current Cell
+		Cell current = manager.landscape.getCellAt(this.row, this.col);
+		//check if current resources and intermovement time allow for reaching new cell or does it die
+		if(death(manager))
+		{
+			kill(manager);
+		}
+		//check if died because of age
+		
+		else
+		{
+			//it didn't die, so find cell with most resources
+			manager.landscape.getCellAt(this.row, this.col).setOccupied(false);
+			int[] new_row_col = findMaxResourceCell(current, manager);
+			this.setRowCol(new_row_col[0], new_row_col[1]);
+			manager.landscape.getCellAt(new_row_col[0], new_row_col[1]).setOccupied(true);
+			
+			//collect resources
+			this.setResources(this.getResourceLevel() + 
+					manager.landscape.getCellAt(new_row_col[0], new_row_col[1]).getCurrentResource());
+			manager.landscape.getCellAt(new_row_col[0], new_row_col[1]).setCurrentResource(0);
+		}
+	}
+	
+	/*
+	 * Schedules death.
+	 */
+	public void kill(SimulationManager manager)
+	{
+		manager.calendar.add(new Event(this, EventType.die, this.deathTime));
+	}
+	
+	/*
+	 * Returns the row and col in an int array with max resources within vision. 
+	 */
+	public int[] findMaxResourceCell(Cell max, SimulationManager manager)
+	{
+		Cell temp = max;
+		int row = this.row;
+		int col = this.col;
+		for(int i = 1; i <= this.vision; i ++)
+		{
+			//right
+			temp = manager.landscape.getCellAt(this.row,
+					(this.col + i + manager.landscape.getMaxCol()) % manager.landscape.getMaxCol());
+			if(max.getCurrentResource() < temp.getCurrentResource() && temp.isOccupied() == false)
+			{
+				max = temp;
+				row = this.row;
+				col = (this.col + i + manager.landscape.getMaxCol()) % manager.landscape.getMaxCol();
+			}
+			
+			//left
+			temp = manager.landscape.getCellAt(this.row, 
+					(this.col - i + manager.landscape.getMaxCol()) % manager.landscape.getMaxCol());
+			if(max.getCurrentResource() < temp.getCurrentResource() && temp.isOccupied() == false)
+			{
+				max = temp;
+				row = this.row;
+				col = (this.col - i + manager.landscape.getMaxCol()) % manager.landscape.getMaxCol();
+			}
+			
+			//up
+			temp = manager.landscape.getCellAt(
+					(this.row + i + manager.landscape.getMaxRow()) % manager.landscape.getMaxRow(), this.col);
+			if(max.getCurrentResource() < temp.getCurrentResource() && temp.isOccupied() == false)
+			{
+				max = temp;
+				row = (this.row + i + manager.landscape.getMaxRow()) % manager.landscape.getMaxRow();
+				col = this.col;
+			}
+			
+			//down
+			temp = manager.landscape.getCellAt(
+					(this.row - i + manager.landscape.getMaxRow()) % manager.landscape.getMaxRow(), this.col);
+			if(max.getCurrentResource() < temp.getCurrentResource() && temp.isOccupied() == false)
+			{
+				max = temp;
+				row = (this.row - i + manager.landscape.getMaxRow()) % manager.landscape.getMaxRow();
+				col = this.col;
+			}
+		}
+		return new int[]{row, col};
+	}
+	
+	/*
+	 * Returns boolean if the agent died while moving and sets death time
+	 */
+	public boolean death(SimulationManager manager)
+	{
+		double x1 = manager.getTime() - this.getIntermovement();
+		double x2 = manager.getTime();
+		
+		double y1 = this.getResourceLevel();
+		double y2 = this.getResourceLevel() - this.metaRate * (x2 - x1);
+		if(y2 < 0)
+		{
+			double slope = (y2 - y1) / (x2 - x1);
+			double intercept = y2 - (slope * x2);
+			
+			this.deathTime = -intercept / slope;
+			return true;
+		}
+		return false;
+	}
 }
-

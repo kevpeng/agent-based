@@ -1,49 +1,65 @@
-import java.util.Random;
+import java.util.*;
 
 public class Landscape
 {
-    private int MAX_DIMENSION = 40;
-    private Cell [][] landscape; // instance of the landscape 2x2 array
-
-    /*	public Landscape()
-        {
-        landscape = new Cell[][];
-        } */
-
-    public Landscape(int row, int col)
-    {
-        landscape = new Cell[row][col];
-
-        for(int i = 0; i < row; i++) {
-            for(int j = 0; j < col; j++) {
-                landscape[i][j] = new Cell(getGaussian(i,j), 1, false, 0);
-            }
-        }
-    }
-
-
-
-
-    public double getGaussian(int x, int y) {
-        return gaussianHelper(x - MAX_DIMENSION/4, y - MAX_DIMENSION/4) + 
-            gaussianHelper(x - 3*MAX_DIMENSION/4, y - 3*MAX_DIMENSION/4);
-    }
-
-    private double gaussianHelper(double x, double y) {
-        double thetaX = 0.4 * MAX_DIMENSION;
-        double thetaY = 0.4 * MAX_DIMENSION;
-        return Math.pow(4.0, - ((x/thetaX)*(x/thetaX)) - ((y/thetaY)*(y/thetaY)));
-    }
-
-    public Cell getCellAt(int row, int col)
-    {
-        return landscape[row][col];
-    }
-
-    public int getMaxDimension()
-    {
-        return MAX_DIMENSION;
-    }
-
-
+	private Cell[][] cellList;
+	private int maxRow;
+	private int maxCol;
+	
+	public Landscape(int row, int col)
+	{
+		maxRow = row;
+		maxCol = col;
+		cellList = new Cell[row][col];
+		for(int i = 0; i < row; i++)
+		{
+			for(int j = 0; j < col; j++)
+			{
+				cellList[i][j] = new Cell(getGaussian(i, j), 1); 
+			}
+		}
+	}
+	
+	/* Getter Methods */
+	public int getMaxRow()
+	{
+		return this.maxRow;
+	}
+	
+	public int getMaxCol()
+	{
+		return this.maxCol;
+	}
+	
+	private double getGaussian(int row, int col)
+	{
+		return getFunction(row - this.maxRow/4, col - this.maxCol/4) + 
+			getFunction(row - 3*this.maxRow/4, col - 3*this.maxCol/4);
+	}
+	
+	private double getFunction(double x, double y)
+	{
+		double thetaX = (double) 0.3 * this.maxRow;
+		double thetaY = (double) 0.3 * this.maxCol;
+		double exp = -Math.pow((x/thetaX), 2) -Math.pow((y/thetaY), 2);
+		return 4 * (Math.exp(exp));
+	}
+	
+	/* Returns the cell at the given row and column */
+	public Cell getCellAt(int row, int col)
+	{
+		return cellList[row][col];
+	}
+	
+	/* Prints information about the entire landscape */
+	public void print()
+	{
+		for(int i = 0; i < this.maxRow; i++)
+		{
+			for(int j = 0; j < this.maxCol; j++)
+			{
+				cellList[i][j].print();
+			}
+		}
+	}
 }
