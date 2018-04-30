@@ -17,7 +17,7 @@ public class Agent
     private double wealth;
     private double metabolicRate;
     private double intermovement;
-    private double timeInSystem;
+//    private double timeInSystem; // same as current age
     private double currentAge;
     private double maxAge;
 
@@ -35,7 +35,7 @@ public class Agent
         this.intermovement = getNextTime();
         this.currentAge = 0;
         this.maxAge = getRandomDouble(60,100);
-        this.timeInSystem = 0.0;
+        //this.timeInSystem = 0.0;
     }
 /*
     Agent(String id, double time)
@@ -74,7 +74,7 @@ public class Agent
     public double getIntermovement() { return this.intermovement; }
     public double getCurrentAge() { return this.currentAge; }
     public double getMaxAge() { return this.maxAge; }
-    public double getTimeInSystem() { return this.timeInSystem; }
+    //public double getTimeInSystem() { return this.timeInSystem; }
 
 
     public void print() {
@@ -84,7 +84,7 @@ public class Agent
         System.out.println("Current Wealth:     " + this.getWealth());
         System.out.println("Metabolic rate:     " + this.getMetabolicRate());
         System.out.println("Intermovement time: " + this.getIntermovement());
-        System.out.println("Time in system:     " + this.getTimeInSystem());
+     //   System.out.println("Time in system:     " + this.getTimeInSystem());
         System.out.println("Current Age:        " + this.getCurrentAge());
         System.out.println("Max age:            " + this.getMaxAge());
         System.out.println();
@@ -106,11 +106,19 @@ public class Agent
 
     // set new intermovement time
     public void setNewTime() { 
-        this.timeInSystem += this.intermovement; 
         this.intermovement = getNextTime(); 
-        this.currentAge = this.timeInSystem;
     }
 
+    // returns if it will survive or die next
+    public String setAge(double sysTime) {
+        //this.timeInSystem = sysTime;
+        this.currentAge = sysTime;
+        if(this.currentAge > this.maxAge) 
+            return "DEATH"; // death
+
+        else
+            return "MOVE";
+    }
 
     // move agent to new 
     public void move(Landscape land)

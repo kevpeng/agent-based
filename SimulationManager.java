@@ -49,8 +49,8 @@ class SimulationManager extends WindowManager
 
             // to do: check valid
             while(true) {
-                int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-                int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+                int row = rng.nextInt(gridSize); // an int in [0, gridsize-1]
+                int col = rng.nextInt(gridSize); // an int in [0, gridsize-1]
                 if(landscape.getCellAt(row, col).getOccupancy() == false)
                 { 
                     a.setRowCol(row, col);
@@ -68,9 +68,9 @@ class SimulationManager extends WindowManager
             Agent x = agentList.get(i);
             String type = "";
             if(x.getCurrentAge() + x.getIntermovement() > x.getMaxAge())
-            { type = "death"; }
+            { type = "DEATH"; }
             else 
-            { type = "move";  }
+            { type = "MOVE";  }
 
             eventList.add(new Event(x.getIntermovement(), 
                         type, x));
@@ -124,30 +124,51 @@ class SimulationManager extends WindowManager
            try { Thread.sleep(500); } catch (Exception e) {}
            } */
             canvas.repaint();
-            try { Thread.sleep(500); } catch (Exception de) {}
-        while(this.time < 10)
+            try { Thread.sleep(50); } catch (Exception de) {}
+        while(this.time < maxTime)
         {
             Event e = eventList.poll(); // current event
-            this.time += e.getTime();    // get time of the current event
+            
             System.out.println("************ CURRENT SIM TIME: " + this.time);
-            if(e.getType().equals("move")) // move the thing 
+            this.time += e.getTime();    // get time of the current event
+            e.getAgent().print();
+            String eventType = e.getAgent().setAge(this.time);
+            e.setType(eventType); 
+            System.out.println(e.getType());
+            System.out.println();
+            if(e.getType().equals("MOVE")) // move the thing 
             {
-                e.getAgent().print();
                 e.getAgent().move(landscape);
                 e.setTime(e.getAgent().getIntermovement());
+                
+
                 eventList.add(e);
                 //schedule next event for this agent
             }
             else if(e.getType().equals("DEATH"))
             {
-                // new, replacement agent has 
-                Agent a = new Agent(e.getAgent().getID());
+                // new, replacement agent has the dead cell's id
+                Agent a = new Agent(e.getAgent().getID() + "new");
+                
+                // give it an initial, new starting position
+                while(true) {
+                    int row = rng.nextInt(gridSize); // an int in [0, gridsize-1]
+                    int col = rng.nextInt(gridSize); // an int in [0, gridsize-1]
+                    if(landscape.getCellAt(row, col).getOccupancy() == false)
+                    { 
+                        a.setRowCol(row, col);
+                        break; 
+                    }
+                }
+                
+                eventList.add(new Event(a.getIntermovement(), 
+                        "MOVE", a));
                 //kill
                 //e.getAgent.
                 //create new
             }
             canvas.repaint();
-            try { Thread.sleep(500); } catch (Exception de) {}
+            try { Thread.sleep(50); } catch (Exception de) {}
         }
 
     }
@@ -162,6 +183,6 @@ class SimulationManager extends WindowManager
     //======================================================================
     public static void main(String[] args)
     {
-        new SimulationManager(40, 1, 8675309, 10);
+        new SimulationManager(40, 1, 8675309, 200);
     }
 }
