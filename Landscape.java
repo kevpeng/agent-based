@@ -2,10 +2,12 @@ import java.util.*;
 
 public class Landscape
 {
+    // variables
 	private Cell[][] cellList;
 	private int maxRow;
 	private int maxCol;
 	
+    // generate the landscape based on given dimensions.
 	public Landscape(int row, int col)
 	{
 		maxRow = row;
@@ -15,21 +17,15 @@ public class Landscape
 		{
 			for(int j = 0; j < col; j++)
 			{
+                // each cell gets a value based on a gaussian and 1 unit of regrowth 
 				cellList[i][j] = new Cell(getGaussian(i, j), 1); 
 			}
 		}
 	}
 	
 	/* Getter Methods */
-	public int getMaxRow()
-	{
-		return this.maxRow;
-	}
-	
-	public int getMaxCol()
-	{
-		return this.maxCol;
-	}
+	public int getMaxRow() { return this.maxRow; }
+	public int getMaxCol() { return this.maxCol; }
 	
 	private double getGaussian(int row, int col)
 	{
@@ -46,18 +42,13 @@ public class Landscape
 	}
 	
 	/* Returns the cell at the given row and column */
-	public Cell getCellAt(int row, int col)
-	{
-		return cellList[row][col];
-	}
+	public Cell getCellAt(int row, int col) { return cellList[row][col]; }
 	
 	/* Prints information about the entire landscape */
 	public void print()
 	{
-		for(int i = 0; i < this.maxRow; i++)
-		{
-			for(int j = 0; j < this.maxCol; j++)
-			{
+		for(int i = 0; i < this.maxRow; i++) {
+			for(int j = 0; j < this.maxCol; j++) {
 				cellList[i][j].print();
 			}
 		}

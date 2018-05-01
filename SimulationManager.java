@@ -6,18 +6,19 @@ import java.util.*;
 
 class SimulationManager extends WindowManager
 {
-    protected ArrayList<Agent> agentList; 
+    protected int gridSize;
         // A list of all agents in the simulation; this is declared as
         // protected because we access it directly from within AgentCanvas.  
         // Why?  Because we only access it to draw the agents, and given 
         // that the list may be large, it doesn't make sense to
         // make a copy and return that copy to AgentCanvas.
 
-    
+    // create a priority queue of events 
 	static PriorityQueue<Event> calendar = new PriorityQueue<Event>(new EventComparator());
-	private boolean debug = false;
-	protected Landscape landscape;
-    protected int gridSize;
+	private boolean debug = true;
+    protected ArrayList<Agent> agentList; 
+    protected Landscape landscape;
+    protected int deaths;
 
     private AgentCanvas canvas;  // the canvas on which agents are drawn
     private static Random rng;
@@ -33,7 +34,7 @@ class SimulationManager extends WindowManager
 
         this.gridSize  = gridSize;
         this.agentList = new ArrayList<Agent>();
-
+        this.deaths = 0;
         rng = new Random(initialSeed);
 
         this.time = 0;   // initialize the simulation clock
@@ -140,6 +141,7 @@ class SimulationManager extends WindowManager
 			}
 			else if(type == EventType.die)
 			{
+                this.deaths += 1;
 //				System.out.println("DEATH");
 				//set occupancy to false
 				landscape.getCellAt(a.getRow(), a.getCol()).setOccupied(false);
@@ -231,6 +233,20 @@ class SimulationManager extends WindowManager
     //======================================================================
     public static void main(String[] args)
     {
-        new SimulationManager(40, 500, 8675309, 50);
+        // if you want to customize input, more than one command line arg
+        if(args.length > 0)
+        {
+            System.out.println("Specify inputs: (n-dimension, numAgents, initial seed, run time)");
+            Scanner sc = new Scanner(System.in);
+            int dim = sc.nextInt();
+            int numAgents = sc.nextInt();
+            int initSeed = sc.nextInt();
+            int runTime = sc.nextInt(); 
+            sc.close();
+            new SimulationManager(dim, numAgents, initSeed, runTime);
+        }
+        else {
+            new SimulationManager(40, 500, 8675309, 50);
+        }
     }
 }

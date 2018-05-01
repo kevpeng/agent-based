@@ -271,7 +271,7 @@ class AgentCanvas extends JPanel
 
         DecimalFormat df = new DecimalFormat("0.00"); 
         String info = "Time: " + df.format(simulation.getTime()) + "  " +
-            "Agents: " + simulation.agentList.size();
+            "Agents: " + simulation.agentList.size() + "  " + "Deaths: " + simulation.deaths; 
 
         // Find the size of string in the font being used by the current
         // Graphics2D context.

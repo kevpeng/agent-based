@@ -2,19 +2,23 @@ import java.util.*;
 
 public class Agent
 {
-	private int row;
-	private int col;
+    // generate a random
+	static Random rng = new Random(1234567);	
+    
+
 	private String id;
+    
+    private int row;
+	private int col;
 	
-	public static final int maxAge = 100;
 	private int vision;
+    private double maxAge;
 	private double metaRate;
 	private double resources;
 	private double intermovement;
 	private double age;
 	private double deathTime;
-	
-	static Random rng = new Random(1234567);
+
 	
 	Agent(String id)
 	{
@@ -24,7 +28,8 @@ public class Agent
 		this.resources = getUniform(5, 25, false);
 		this.age = getUniform(60, 100, false);
 		this.intermovement = getNewIntermovement();
-	}
+	    this.maxAge = getUniform(60, 100, false);
+    }
 	
 	/* Agent(String id, int row, int col, int vision, double metRate, 
 		double initialResources, double intermovement, double age)
