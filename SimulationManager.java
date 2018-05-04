@@ -18,7 +18,8 @@ class SimulationManager extends WindowManager
     private boolean debug = false;
     protected ArrayList<Agent> agentList; 
     protected Landscape landscape;
-    protected int deaths;
+    protected int healthyDeaths;
+    protected int infectedDeaths;
 
     private AgentCanvas canvas;  // the canvas on which agents are drawn
     private static Random rng;
@@ -34,7 +35,8 @@ class SimulationManager extends WindowManager
 
         this.gridSize  = gridSize;
         this.agentList = new ArrayList<Agent>();
-        this.deaths = 0;
+        this.healthyDeaths = 0;
+        this.infectedDeaths = 0;
         rng = new Random(initialSeed);
 
         this.time = 0;   // initialize the simulation clock
@@ -121,14 +123,17 @@ class SimulationManager extends WindowManager
             // 
             if(a.getNextEventType() == 0)
             {
-//              System.out.println("MOVE");
                 a.move(this);
                 calendar.add(new Event(a,  a.getminTime()));
             }
             else 
             {
-                                this.deaths += 1;
-                                //System.out.println("DEATH");
+                // increment death counter based on infected or not
+                if(a.getHasDisease())
+                    this.infectedDeaths += 1;
+                else
+                    this.healthyDeaths += 1;
+                //System.out.println("DEATH");
                 //set occupancy to false
                 landscape.getCellAt(a.getRow(), a.getCol()).setOccupied(false);
                         
@@ -221,7 +226,7 @@ class SimulationManager extends WindowManager
             new SimulationManager(dim, numAgents, initSeed, runTime);
         }
         else {
-            new SimulationManager(40, 400, 8675309, 100);
+            new SimulationManager(40, 200, 8675309, 100);
         }
     }
 }

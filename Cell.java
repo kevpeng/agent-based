@@ -2,6 +2,7 @@ import java.util.*;
 
 public class Cell
 {
+    // characteristics of a cell
 	private double RESOURCE_CAP;;
 	private double RESOURCE_REGROWTH;;
 	

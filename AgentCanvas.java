@@ -171,12 +171,12 @@ class AgentCanvas extends JPanel
                 // set the color we'll use to draw the agent
                 graphics.setPaint(Color.red);
                 
-                /*
-                if (a.needsToBeADifferentColor())
+                
+                if (!a.getHasDisease()) // used to red being the good agents 
                     graphics.setPaint(Color.red);
-                else
+                else // has a disease
                     graphics.setPaint(Color.blue);
-               */
+               
 
                 graphics.fillOval(guiX, guiY, agentSize, agentSize);
 
@@ -274,7 +274,8 @@ class AgentCanvas extends JPanel
 
         DecimalFormat df = new DecimalFormat("0.00"); 
         String info = "Time: " + df.format(simulation.getTime()) + "  " +
-            "Agents: " + simulation.agentList.size() + "  " + "Deaths: " + simulation.deaths; 
+            "Agents: " + simulation.agentList.size() + "  " + "Healthy Deaths: " + simulation.healthyDeaths +
+            "  Infected Deaths: " + simulation.infectedDeaths; 
 
         // Find the size of string in the font being used by the current
         // Graphics2D context.

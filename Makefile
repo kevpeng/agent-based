@@ -1,10 +1,13 @@
 main:
 	javac *.java
 
+run:
+	java SimulationManager
+
 normal:
 	java SimulationManager
 
-special:
+walk:
 	java SimulationManager -i
 
 clean:

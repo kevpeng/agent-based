@@ -26,7 +26,7 @@ public class Landscape
 	/* Getter Methods */
 	public int getMaxRow() { return this.maxRow; }
 	public int getMaxCol() { return this.maxCol; }
-	
+    
 	private double getGaussian(int row, int col)
 	{
 		return getFunction(row - this.maxRow/4, col - this.maxCol/4) + 
