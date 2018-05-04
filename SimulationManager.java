@@ -128,7 +128,7 @@ class SimulationManager extends WindowManager
             else 
             {
                                 this.deaths += 1;
-                                System.out.println("DEATH");
+                                //System.out.println("DEATH");
                 //set occupancy to false
                 landscape.getCellAt(a.getRow(), a.getCol()).setOccupied(false);
                         

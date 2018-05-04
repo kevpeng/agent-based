@@ -1,10 +1,11 @@
 main:
 	javac *.java
 
-run:
+normal:
 	java SimulationManager
 
-input:
+special:
 	java SimulationManager -i
+
 clean:
 	rm -rf *.class

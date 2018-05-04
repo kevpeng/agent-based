@@ -20,7 +20,7 @@ public class Agent
 	private double intermovement;
   	private double deathTime;
   	private double minTime;
-
+    
 	// initialize
 	
 	
@@ -103,10 +103,6 @@ public class Agent
 		return this.intermovement;
 	}
 	
-	public double getAge()
-	{
-		return this.age;
-	}
 	
 	public double getDeathTime()
 	{
@@ -139,10 +135,6 @@ public class Agent
 		this.intermovement = intermovement;
 	}
 	
-	public void setAge(double age)
-	{
-		this.age = age;
-	}
 	
 	public void setRowCol(int row, int col)
 	{
