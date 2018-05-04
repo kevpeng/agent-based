@@ -2,58 +2,37 @@ import java.util.*;
 
 public class Cell
 {
-
-    // RESOURCE VALUES
-    private static double RESOURCE_CAP; // may be double? static!!
-    private static double REGROWTH_RATE;
-
-    // variables for each cell
+	private double RESOURCE_CAP;;
+	private double RESOURCE_REGROWTH;;
+	
     private boolean occupied;
-    private double resourceLevel;
-    private int row;
-    private int col;
-    private double timeLastUpdated = 0;
-
-    // default constructor
-    public Cell()
-    {
-     /*   RESOURCE_CAP = 0;
-        REGROWTH_RATE = 0;
-        occupied = false;
-        resourceLevel = 0;
-        */
-        this.occupied = false;
-        this.resourceLevel = 0;
-    }
-
-    // constructor that takes in stuff
-    public Cell(double resourceCap, double resourceRate,
-            boolean occupancy, double resourceLev, int row, int col)
-    {
-        this.RESOURCE_CAP = resourceCap;
-        this.REGROWTH_RATE = resourceRate;
-        this.occupied = occupancy;
-        this.resourceLevel = resourceLev;
-        this.row = row;
-        this.col = col;
-    }
-
-    // getters
-    public int getRow() { return this.row; }
-    public int getCol() { return this.col; }
-    public boolean getOccupancy()   { return occupied; }
-    public double getCapacity()     { return RESOURCE_CAP; }
-    public double getRegrowthRate() { return REGROWTH_RATE; }
-    public double getResource()     { return resourceLevel; }
-
-    // setters
-    public void setOccupancy(boolean boo)   { occupied = boo; }
-    public void setResource(double level) { resourceLevel = level; }
-
-    // mutators
-    public void updateCell(double time)   { timeLastUpdated = time; }
-    public void regrowCell(double time)   {  
-        resourceLevel = Math.min(RESOURCE_CAP, resourceLevel + 
-                ((time - timeLastUpdated) * REGROWTH_RATE));
-    }
+	private double currentResource;
+	
+    // initialize a cell with a capacity and a regrowth rate.
+	Cell(double cap, double growth)
+	{
+		this.occupied = false;
+		this.RESOURCE_CAP = cap;
+		this.RESOURCE_REGROWTH = growth;
+		this.currentResource = cap;
+	}
+	
+	/* Getter Methods */
+	public boolean isOccupied() { return this.occupied; }
+	public double getCapacity() { return this.RESOURCE_CAP; }
+	public double getResourceRegrowth() { return this.RESOURCE_REGROWTH; }
+	public double getCurrentResource(){ return this.currentResource; }
+	
+	/* Setter Methods */
+	public void setOccupied(boolean isOccupied)	{ this.occupied = isOccupied; }
+	public void setCurrentResource(double resourceLevel) { this.currentResource = resourceLevel; }
+	
+	/* Print method to show info about cell */
+	public void print()
+	{
+		System.out.println("Occupied: " + this.isOccupied());
+		System.out.println("Resource Capacity: " + this.getCapacity());
+		System.out.println("Resource Regrowth: " + this.getResourceRegrowth());
+		System.out.println("Current Resource: " + this.getCurrentResource() + "\n");
+	}
 }

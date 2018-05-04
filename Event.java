@@ -1,40 +1,61 @@
-import java.util.Comparator;
+import java.util.*;
 
-public class Event 
+enum EventType
 {
-    private double time;
-    private String type;
-    private Agent agent;
+	move, die;
+}
 
-    //Constructor
-    Event(double time, String type, Agent agent)
-    {
-        this.time  = time;
-        this.type  = type;
-        this.agent = agent;
-    }
-
-    public double getTime() { return this.time;  }
-    public String getType() { return this.type;  }
-    public Agent getAgent() { return this.agent; }
-
-    //use these to alter the time and type of event once
-    //completed
-    public void setTime(double time)
-    {
-        this.time = time;
-    }
-
-    public void setType(String type)
-    {
-        this.type = type;
-    }
-
-    public void setAgent(Agent agent)
-    {
-        this.agent = agent;
-    }
-}	
+public class Event
+{
+	private Agent a;
+	private EventType e;
+	private double t;
+	
+	Event(Agent a, EventType e, double t)
+	{
+		this.a = a;
+		this.e = e;
+		this.t = t;
+	}
+	
+	/* Getter Methods */
+	public Agent getAgent()
+	{
+		return this.a;
+	}
+	
+	public EventType getEvent()
+	{
+		return this.e;
+	}
+	
+	public double getTime()
+	{
+		return this.t;
+	}
+	
+	public void print()
+	{
+//		System.out.print("Agent: ");
+//		this.a.print();
+		System.out.println("Event Type: " + this.e);
+		System.out.println("Event Time: " + this.t + "\n");
+	}
+	
+	/* public static void main(String args[])
+	{
+		Random rng = new Random();
+		PriorityQueue<Event> calendar = new PriorityQueue<Event>(new EventComparator());
+		for(int i = 0; i < 5; i++)
+		{
+			calendar.add(new Event(new Agent("agent " + i), EventType.move, rng.nextDouble()));
+		}
+		for(int i = 0; i < 5; i ++)
+		{
+			calendar.poll().getAgent().print();
+		}
+	} */
+}
 
 class EventComparator implements Comparator<Event>
 {
@@ -50,60 +71,4 @@ class EventComparator implements Comparator<Event>
 		}
 		return 0;
 	}
-}  
-/*public int compare(Event one, Event two)
-    {
-        if(one.getTime() < two.getTime())
-        {
-            return -1;
-        }
-        if(one.getTime() > two.getTime())
-        {
-            return 1;
-        }
-        return 0;
-    }
 }
-*/
-
-
-
-
-
-/*
-   public class Event 
-   {
-   private double time;
-   private String type;
-   private Agent agent;
-
-//Constructor
-Event(double time, String type, Agent agent)
-{
-this.time  = time;
-this.type  = type;
-this.agent = agent;
-}
-
-public double getTime() { return this.time;  }
-public String getType() { return this.type;  }
-public Agent getAgent() { return this.agent; }
-
-//use these to alter the time and type of event once
-//completed
-public void setTime(double time)
-{
-this.time = time;
-}
-
-public void setType(String type)
-{
-this.type = type;
-}
-
-public void setAgent(Agent agent)
-{
-this.agent = agent;
-}
-   }	
-   */

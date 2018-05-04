@@ -6,35 +6,35 @@ import java.util.*;
 
 class SimulationManager extends WindowManager
 {
-    protected ArrayList<Agent> agentList; 
-    protected PriorityQueue<Event> eventList;
-    // A list of all agents in the simulation; this is declared as
-    // protected because we access it directly from within AgentCanvas.  
-    // Why?  Because we only access it to draw the agents, and given 
-    // that the list may be large, it doesn't make sense to
-    // make a copy and return that copy to AgentCanvas.
-
-    protected Landscape landscape;
     protected int gridSize;
+        // A list of all agents in the simulation; this is declared as
+        // protected because we access it directly from within AgentCanvas.  
+        // Why?  Because we only access it to draw the agents, and given 
+        // that the list may be large, it doesn't make sense to
+        // make a copy and return that copy to AgentCanvas.
+
+    // create a priority queue of events 
+	static PriorityQueue<Event> calendar = new PriorityQueue<Event>(new EventComparator());
+	private boolean debug = true;
+    protected ArrayList<Agent> agentList; 
+    protected Landscape landscape;
+    protected int deaths;
 
     private AgentCanvas canvas;  // the canvas on which agents are drawn
-    private Random rng;
+    private static Random rng;
 
     private double time;  // the simulation time
 
     //======================================================================
     //* public SimulationManager(int gridSize, int numAgents, int initialSeed)
     //======================================================================
-    public SimulationManager(int gridSize, int numAgents, int initialSeed,
-            double maxTime)
+    public SimulationManager(int gridSize, int numAgents, int initialSeed, double maxTime)
     {
         super("Sugarscape", 500, 500);  // name, window width, window height
 
         this.gridSize  = gridSize;
         this.agentList = new ArrayList<Agent>();
-        this.eventList = new PriorityQueue<Event>(new EventComparator());
-
-
+        this.deaths = 0;
         rng = new Random(initialSeed);
 
         this.time = 0;   // initialize the simulation clock
@@ -46,40 +46,20 @@ class SimulationManager extends WindowManager
             Agent a = new Agent("agent " + agentList.size());
             agentList.add(a);
 
-
-            // to do: check valid
-            while(true) {
-                int row = rng.nextInt(gridSize); // an int in [0, gridsize-1]
-                int col = rng.nextInt(gridSize); // an int in [0, gridsize-1]
-                if(landscape.getCellAt(row, col).getOccupancy() == false)
-                { 
-                    a.setRowCol(row, col);
-                    break; 
-                }
-                // continue until agent is places properly
-            }
-        //    a.print();
+			// we should check to make sure the cell isn't already occupied!
+            while(true)
+			{
+				int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+				int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+				if(landscape.getCellAt(row, col).isOccupied() == false)
+				{
+					a.setRowCol(row, col);
+					landscape.getCellAt(row, col).setOccupied(true);
+					break;
+				}
+			}
+            calendar.add(new Event(a, EventType.move, a.getIntermovement()));
         }
-
-        for(int i = 0; i < numAgents; i++)
-        {
-            //also this code doesn't make sense
-            //why access it twice
-            Agent x = agentList.get(i);
-            String type = "";
-            if(x.getCurrentAge() + x.getIntermovement() > x.getMaxAge())
-            { type = "DEATH"; }
-            else 
-            { type = "MOVE";  }
-
-            eventList.add(new Event(x.getIntermovement(), 
-                        type, x));
-        }
-       // for(int i = 0; i < numAgents; i++) 
-       // {
-         //   eventList.poll().getAgent().print();
-           // System.out.println("event time: " + e    
-       // }
 
         this.createWindow();
         this.run(maxTime);
@@ -108,71 +88,141 @@ class SimulationManager extends WindowManager
     {
         // bogus simulation code below...
         /* for (int t = 1; t <= 100; t++)
-           {
-           this.time = t;
-           for (int i = 0; i < agentList.size(); i++)
-           {
-           Agent a = agentList.get(i);
-
-           int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-           int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-
-        // we should check to make sure the cell isn't already occupied!
-        a.setRowCol(row, col); 
-           }
-           canvas.repaint();
-           try { Thread.sleep(500); } catch (Exception e) {}
-           } */
-            canvas.repaint();
-            try { Thread.sleep(50); } catch (Exception de) {}
-        while(this.time < maxTime)
         {
-            Event e = eventList.poll(); // current event
-            
-            System.out.println("************ CURRENT SIM TIME: " + this.time);
-            this.time += e.getTime();    // get time of the current event
-            e.getAgent().print();
-            String eventType = e.getAgent().setAge(this.time);
-            e.setType(eventType); 
-            System.out.println(e.getType());
-            System.out.println();
-            if(e.getType().equals("MOVE")) // move the thing 
+            this.time = t;
+            for (int i = 0; i < agentList.size(); i++)
             {
-                e.getAgent().move(landscape);
-                e.setTime(e.getAgent().getIntermovement());
-                
+                Agent a = agentList.get(i);
 
-                eventList.add(e);
-                //schedule next event for this agent
-            }
-            else if(e.getType().equals("DEATH"))
-            {
-                // new, replacement agent has the dead cell's id
-                Agent a = new Agent(e.getAgent().getID() + "new");
-                
-                // give it an initial, new starting position
-                while(true) {
-                    int row = rng.nextInt(gridSize); // an int in [0, gridsize-1]
-                    int col = rng.nextInt(gridSize); // an int in [0, gridsize-1]
-                    if(landscape.getCellAt(row, col).getOccupancy() == false)
-                    { 
-                        a.setRowCol(row, col);
-                        break; 
-                    }
-                }
-                
-                eventList.add(new Event(a.getIntermovement(), 
-                        "MOVE", a));
-                //kill
-                //e.getAgent.
-                //create new
+                int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+                int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+
+                // we should check to make sure the cell isn't already occupied!
+                a.setRowCol(row, col); 
             }
             canvas.repaint();
-            try { Thread.sleep(50); } catch (Exception de) {}
-        }
-
+            try { Thread.sleep(500); } catch (Exception e) {}
+        } */	
+    	
+//    	try { Thread.sleep(1000); } catch (Exception e) {}
+    	this.time = 0;
+    	canvas.repaint();
+		while(this.getTime() < maxTime)
+		{
+			try { Thread.sleep(1); } catch (Exception e) {}
+			//get event data
+			Event e = calendar.poll();
+			EventType type = e.getEvent();
+			Agent a = e.getAgent();
+			
+			////////////////////////////////////////////
+			if(debug)
+			{
+				System.out.println("BEFORE_____________________________");
+				e.print();
+				a.print();
+				landscape.getCellAt(a.getRow(), a.getCol()).print();
+				System.out.println(this.time + "\n");
+				System.out.println("DONE BEFORE_____________________________");
+			}
+			///////////////////////////////////////////
+			
+			//get previous event's time and new event's time and update age and resource regrowth
+			double previous = this.time;
+			this.time = e.getTime();
+			update(this.time - previous);
+			
+			if(type == EventType.move)
+			{
+//				System.out.println("MOVE");
+				a.move(this);
+				a.setIntermovement(Agent.getNewIntermovement());
+				calendar.add(new Event(a, EventType.move, this.time + a.getIntermovement()));
+			}
+			else if(type == EventType.die)
+			{
+                this.deaths += 1;
+//				System.out.println("DEATH");
+				//set occupancy to false
+				landscape.getCellAt(a.getRow(), a.getCol()).setOccupied(false);
+						
+				//remove the agent
+				for(int i = 0; i < agentList.size(); i++)
+				{
+					if(agentList.get(i).getId().equals(a.getId()))
+					{
+						agentList.remove(i);
+						break;
+					}
+				}
+				
+				//add new agent
+				Agent new_a = new Agent("agent " + this.agentList.size());
+				this.agentList.add(new_a);
+				while(true)
+				{
+					int row = rng.nextInt(this.gridSize); // an int in [0, gridSize-1]
+					int col = rng.nextInt(this.gridSize); // an int in [0, gridSize-1]
+					if(this.landscape.getCellAt(row, col).isOccupied() == false)
+					{
+						new_a.setRowCol(row, col);
+						break;
+					}			
+				}
+				//schedule an event for new agent
+				calendar.add(new Event(new_a, EventType.move, this.time + new_a.getIntermovement()));
+			}
+				else
+			{
+				//Something
+			}
+			////////////////////////////////////////////
+			if(debug)
+			{
+				System.out.println("AFTER_____________________________");
+				a.print();
+				landscape.getCellAt(a.getRow(), a.getCol()).print();
+				System.out.println(this.time + "\n");
+				System.out.println("DONE AFTER_____________________________");
+			}
+			///////////////////////////////////////////
+			canvas.repaint();
+		}
     }
-
+    
+    private void update(double timeDiff)
+    {
+    	for(int i = 0; i < agentList.size(); i++)
+    	{
+    		Agent agent_i = this.agentList.get(i);
+    		agent_i.setAge(agent_i.getAge() + timeDiff);
+//    		if(agent_i.getAge() > Agent.maxAge)
+//    		{
+//    			//schedule death
+//    			double x1 = this.time - timeDiff;
+//    			double x2 = this.time;
+//    			
+//    			double y1 = agent_i.getAge() - timeDiff;
+//    			double y2 = agent_i.getAge();
+//    			
+//    			double slope = (y2 - y1) / (x2 - x1);
+//    			double intercept = y2 - (slope * x2);
+//    			
+//    			agent_i.setDeathTime(-intercept / slope);
+//    			calendar.add(new Event(agent_i, EventType.die, agent_i.getDeathTime()));
+//    		}
+    	}
+    	
+    	for(int i = 0; i < this.gridSize; i++)
+    	{
+    		for(int j = 0; j < this.gridSize; j++)
+    		{
+    			Cell i_j = this.landscape.getCellAt(i, j);
+    			i_j.setCurrentResource(Math.min(i_j.getCapacity(), 
+    					i_j.getCurrentResource() + i_j.getResourceRegrowth() * timeDiff));
+    		}
+    	}
+    }
 
     //======================================================================
     //* public static void main(String[] args)
@@ -183,6 +233,20 @@ class SimulationManager extends WindowManager
     //======================================================================
     public static void main(String[] args)
     {
-        new SimulationManager(40, 1, 8675309, 200);
+        // if you want to customize input, more than one command line arg
+        if(args.length > 0)
+        {
+            System.out.println("Specify inputs: (n-dimension, numAgents, initial seed, run time)");
+            Scanner sc = new Scanner(System.in);
+            int dim = sc.nextInt();
+            int numAgents = sc.nextInt();
+            int initSeed = sc.nextInt();
+            int runTime = sc.nextInt(); 
+            sc.close();
+            new SimulationManager(dim, numAgents, initSeed, runTime);
+        }
+        else {
+            new SimulationManager(40, 500, 8675309, 50);
+        }
     }
 }
