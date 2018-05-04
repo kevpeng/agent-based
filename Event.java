@@ -1,20 +1,29 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+
 import java.util.*;
 
+/*
 enum EventType
 {
 	move, die;
 }
-
+*/
 public class Event
 {
 	private Agent a;
-	private EventType e;
+	//private EventType e;
 	private double t;
 	
-	Event(Agent a, EventType e, double t)
+	Event(Agent a,  double t)
 	{
 		this.a = a;
-		this.e = e;
+		
 		this.t = t;
 	}
 	
@@ -24,11 +33,12 @@ public class Event
 		return this.a;
 	}
 	
+        /*
 	public EventType getEvent()
 	{
 		return this.e;
 	}
-	
+	*/
 	public double getTime()
 	{
 		return this.t;
@@ -38,7 +48,7 @@ public class Event
 	{
 //		System.out.print("Agent: ");
 //		this.a.print();
-		System.out.println("Event Type: " + this.e);
+		//System.out.println("Event Type: " + this.e);
 		System.out.println("Event Time: " + this.t + "\n");
 	}
 	

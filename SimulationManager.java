@@ -14,8 +14,8 @@ class SimulationManager extends WindowManager
         // make a copy and return that copy to AgentCanvas.
 
     // create a priority queue of events 
-	static PriorityQueue<Event> calendar = new PriorityQueue<Event>(new EventComparator());
-	private boolean debug = true;
+    static PriorityQueue<Event> calendar = new PriorityQueue<Event>(new EventComparator());
+    private boolean debug = false;
     protected ArrayList<Agent> agentList; 
     protected Landscape landscape;
     protected int deaths;
@@ -43,22 +43,20 @@ class SimulationManager extends WindowManager
 
         for (int i = 0; i < numAgents; i++)
         {
-            Agent a = new Agent("agent " + agentList.size());
+            Agent a = new Agent("agent "+ agentList.size(), this.time);
             agentList.add(a);
-
-			// we should check to make sure the cell isn't already occupied!
             while(true)
-			{
-				int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-				int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-				if(landscape.getCellAt(row, col).isOccupied() == false)
-				{
-					a.setRowCol(row, col);
-					landscape.getCellAt(row, col).setOccupied(true);
-					break;
-				}
-			}
-            calendar.add(new Event(a, EventType.move, a.getIntermovement()));
+            {
+                int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+                int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
+                if(landscape.getCellAt(row, col).isOccupied() == false)
+                {
+                    a.setRowCol(row, col);
+                    landscape.getCellAt(row, col).setOccupied(true);
+                    break;
+                }
+            }
+            calendar.add(new Event(a, a.getminTime()));
         }
 
         this.createWindow();
@@ -86,142 +84,119 @@ class SimulationManager extends WindowManager
     //======================================================================
     public void run(double maxTime)
     {
-        // bogus simulation code below...
-        /* for (int t = 1; t <= 100; t++)
+       
+        
+        try { Thread.sleep(100); } catch (Exception e) {}
+        this.time = 0;
+        canvas.repaint();
+        while(this.getTime() < maxTime)
         {
-            this.time = t;
-            for (int i = 0; i < agentList.size(); i++)
+            try { Thread.sleep(1); } catch (Exception e) {}
+            //get event data
+            Event e = calendar.poll();
+            //EventType type = e.getEvent();
+            Agent a = e.getAgent();
+                        /*
+                        if(a.getminTime() == a.getDeathTime()){
+                            type = EventType.die;
+                        }
+            */
+            ////////////////////////////////////////////
+            if(debug)
             {
-                Agent a = agentList.get(i);
-
-                int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-                int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
-
-                // we should check to make sure the cell isn't already occupied!
-                a.setRowCol(row, col); 
+                System.out.println("BEFORE_____________________________");
+                e.print();
+                a.print();
+                landscape.getCellAt(a.getRow(), a.getCol()).print();
+                System.out.println(this.time + "\n");
+                System.out.println("DONE BEFORE_____________________________");
             }
+            ///////////////////////////////////////////
+            
+            //get previous event's time and new event's time and update age and resource regrowth
+            double previous = this.time;
+            this.time = e.getTime();
+            update(this.time - previous);
+            
+            // 
+            if(a.getNextEventType() == 0)
+            {
+//              System.out.println("MOVE");
+                a.move(this);
+                calendar.add(new Event(a,  a.getminTime()));
+            }
+            else 
+            {
+                                this.deaths += 1;
+                                System.out.println("DEATH");
+                //set occupancy to false
+                landscape.getCellAt(a.getRow(), a.getCol()).setOccupied(false);
+                        
+                //remove the agent
+                for(int i = 0; i < agentList.size(); i++)
+                {
+                    if(agentList.get(i).getId().equals(a.getId()))
+                    {
+                        agentList.remove(i);
+                        break;
+                    }
+                }
+                
+                //add new agent
+                Agent new_a = new Agent("agent " + agentList.size(),this.time);
+                this.agentList.add(new_a);
+                while(true)
+                {
+                    int row = rng.nextInt(this.gridSize); // an int in [0, gridSize-1]
+                    int col = rng.nextInt(this.gridSize); // an int in [0, gridSize-1]
+                    if(this.landscape.getCellAt(row, col).isOccupied() == false)
+                    {
+                        new_a.setRowCol(row, col);
+                        break;
+                    }           
+                }
+                //schedule an event for new agent
+                calendar.add(new Event(new_a, new_a.getminTime()));
+            }
+                
+            ////////////////////////////////////////////
+            if(debug)
+            {
+                System.out.println("AFTER_____________________________");
+                a.print();
+                landscape.getCellAt(a.getRow(), a.getCol()).print();
+                System.out.println(this.time + "\n");
+                System.out.println("DONE AFTER_____________________________");
+            }
+            ///////////////////////////////////////////
             canvas.repaint();
-            try { Thread.sleep(500); } catch (Exception e) {}
-        } */	
-    	
-//    	try { Thread.sleep(1000); } catch (Exception e) {}
-    	this.time = 0;
-    	canvas.repaint();
-		while(this.getTime() < maxTime)
-		{
-			try { Thread.sleep(1); } catch (Exception e) {}
-			//get event data
-			Event e = calendar.poll();
-			EventType type = e.getEvent();
-			Agent a = e.getAgent();
-			
-			////////////////////////////////////////////
-			if(debug)
-			{
-				System.out.println("BEFORE_____________________________");
-				e.print();
-				a.print();
-				landscape.getCellAt(a.getRow(), a.getCol()).print();
-				System.out.println(this.time + "\n");
-				System.out.println("DONE BEFORE_____________________________");
-			}
-			///////////////////////////////////////////
-			
-			//get previous event's time and new event's time and update age and resource regrowth
-			double previous = this.time;
-			this.time = e.getTime();
-			update(this.time - previous);
-			
-			if(type == EventType.move)
-			{
-//				System.out.println("MOVE");
-				a.move(this);
-				a.setIntermovement(Agent.getNewIntermovement());
-				calendar.add(new Event(a, EventType.move, this.time + a.getIntermovement()));
-			}
-			else if(type == EventType.die)
-			{
-                this.deaths += 1;
-//				System.out.println("DEATH");
-				//set occupancy to false
-				landscape.getCellAt(a.getRow(), a.getCol()).setOccupied(false);
-						
-				//remove the agent
-				for(int i = 0; i < agentList.size(); i++)
-				{
-					if(agentList.get(i).getId().equals(a.getId()))
-					{
-						agentList.remove(i);
-						break;
-					}
-				}
-				
-				//add new agent
-				Agent new_a = new Agent("agent " + this.agentList.size());
-				this.agentList.add(new_a);
-				while(true)
-				{
-					int row = rng.nextInt(this.gridSize); // an int in [0, gridSize-1]
-					int col = rng.nextInt(this.gridSize); // an int in [0, gridSize-1]
-					if(this.landscape.getCellAt(row, col).isOccupied() == false)
-					{
-						new_a.setRowCol(row, col);
-						break;
-					}			
-				}
-				//schedule an event for new agent
-				calendar.add(new Event(new_a, EventType.move, this.time + new_a.getIntermovement()));
-			}
-				else
-			{
-				//Something
-			}
-			////////////////////////////////////////////
-			if(debug)
-			{
-				System.out.println("AFTER_____________________________");
-				a.print();
-				landscape.getCellAt(a.getRow(), a.getCol()).print();
-				System.out.println(this.time + "\n");
-				System.out.println("DONE AFTER_____________________________");
-			}
-			///////////////////////////////////////////
-			canvas.repaint();
-		}
+        }
     }
     
-    private void update(double timeDiff)
+    private void update(double time)
     {
-    	for(int i = 0; i < agentList.size(); i++)
-    	{
-    		Agent agent_i = this.agentList.get(i);
-    		agent_i.setAge(agent_i.getAge() + timeDiff);
-//    		if(agent_i.getAge() > Agent.maxAge)
-//    		{
-//    			//schedule death
-//    			double x1 = this.time - timeDiff;
-//    			double x2 = this.time;
-//    			
-//    			double y1 = agent_i.getAge() - timeDiff;
-//    			double y2 = agent_i.getAge();
-//    			
-//    			double slope = (y2 - y1) / (x2 - x1);
-//    			double intercept = y2 - (slope * x2);
-//    			
-//    			agent_i.setDeathTime(-intercept / slope);
-//    			calendar.add(new Event(agent_i, EventType.die, agent_i.getDeathTime()));
-//    		}
-    	}
-    	
-    	for(int i = 0; i < this.gridSize; i++)
-    	{
-    		for(int j = 0; j < this.gridSize; j++)
-    		{
-    			Cell i_j = this.landscape.getCellAt(i, j);
-    			i_j.setCurrentResource(Math.min(i_j.getCapacity(), 
-    					i_j.getCurrentResource() + i_j.getResourceRegrowth() * timeDiff));
-    		}
-    	}
+        
+        /*
+        for(int i = 0; i < agentList.size(); i++)
+        {
+            Agent agent_i = this.agentList.get(i);
+            
+        if(agent_i.getminTime() == agent_i.getDeathTime())
+            {
+                
+            calendar.add(new Event(agent_i, EventType.die, agent_i.getDeathTime()));
+        }
+        }
+        */
+        for(int i = 0; i < this.gridSize; i++)
+        {
+            for(int j = 0; j < this.gridSize; j++)
+            {
+                Cell i_j = this.landscape.getCellAt(i, j);
+                i_j.setCurrentResource(Math.min(i_j.getCapacity(), 
+                        i_j.getCurrentResource() + i_j.getResourceRegrowth() * time));
+            }
+        }
     }
 
     //======================================================================
@@ -246,7 +221,7 @@ class SimulationManager extends WindowManager
             new SimulationManager(dim, numAgents, initSeed, runTime);
         }
         else {
-            new SimulationManager(40, 500, 8675309, 120);
+            new SimulationManager(40, 400, 8675309, 100);
         }
     }
 }

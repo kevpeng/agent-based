@@ -1,3 +1,5 @@
+
+
 import java.util.*;
 
 public class Agent
@@ -16,41 +18,49 @@ public class Agent
 	private double metaRate;
 	private double resources;
 	private double intermovement;
-	private double age;
-	private double deathTime;
+  	private double deathTime;
+  	private double minTime;
 
+	// initialize
 	
-	Agent(String id)
+	
+    // used for agents that were generated when some agent died
+    Agent(String id, double time)
 	{
 		this.id = id;
 		this.vision = (int) getUniform(1, 6, true);
 		this.metaRate = getUniform(1, 4, false);
 		this.resources = getUniform(5, 25, false);
-		this.age = getUniform(60, 100, false);
-		this.intermovement = getNewIntermovement();
-	    this.maxAge = getUniform(60, 100, false);
+		this.intermovement = time+ getNewIntermovement();
+        this.maxAge = time + getUniform(60, 100, false);
+        this.deathTime = time + (resources / metaRate);
+        this.deathTime = Math.min(this.deathTime, maxAge);
+        this.minTime = Math.min(intermovement, deathTime);
     }
 	
-	/* Agent(String id, int row, int col, int vision, double metRate, 
-		double initialResources, double intermovement, double age)
-	{
-		this.vision = vision;
-		this.metaRate = metRate;
-		this.resources = initialResources;
-		this.intermovement = intermovement;
-		this.age = age;
-	} */
 	
 	private double getUniform(int lower, int upper, boolean isVision)
 	{
-		if(isVision == true)
-		{
+		if(isVision == true){
 			double x = (double) (rng.nextDouble() * (upper + 1 - lower)) + lower;
 			return (int) x;
 		}
 		double x = (double) (rng.nextDouble() * (upper - lower)) + lower;
 		return x;
 	}
+
+	//set up checking the the next event type 
+	public int getNextEventType() {
+           if(minTime == intermovement){
+                return 0;
+           }
+
+           else{
+
+                return 1;
+            }
+  	}
+		
 	
 	public static double getNewIntermovement()
 	{
@@ -58,28 +68,28 @@ public class Agent
 	}
 	
 	/* Getter Methods */
-	public String getId()
-	{
+	public String getId(){
+
 		return this.id;
 	}
 	
-	public int getRow()
-	{
+	public int getRow(){
+
 		return this.row;
 	}
 	
-	public int getCol()
-	{
+	public int getCol(){
+
 		return this.col;
 	}
 	
-	public int getVision()
-	{
+	public int getVision(){
+
 		return this.vision;
 	}
 	
-	public double getMetaRate()
-	{
+	public double getMetaRate(){
+
 		return this.metaRate;
 	}
 	
@@ -101,6 +111,11 @@ public class Agent
 	public double getDeathTime()
 	{
 		return this.deathTime;
+	}
+
+	public double getminTime()
+	{
+		return this.minTime;
 	}
 	
 	/* Setter Methods */
@@ -148,23 +163,27 @@ public class Agent
 		System.out.println("Vision: " + this.vision);
 		System.out.println("Metabolic Rate: " + this.metaRate);
 		System.out.println("Current Resources: " + this.resources);
-		System.out.println("Age: " + this.age);
 		System.out.println("Intermovement: " + this.intermovement + "\n");
 	}
-		
+        
+       
 	public void move(SimulationManager manager)
 	{
+
+
 		//Agent's Current Cell
 		Cell current = manager.landscape.getCellAt(this.row, this.col);
 		//check if current resources and intermovement time allow for reaching new cell or does it die
+		/*
 		if(death(manager))
 		{
 			kill(manager);
 		}
 		//check if died because of age
-		
-		else
-		{
+		*/
+
+		//else
+		//{
 			//it didn't die, so find cell with most resources
 			manager.landscape.getCellAt(this.row, this.col).setOccupied(false);
 			int[] new_row_col = findMaxResourceCell(current, manager);
@@ -173,19 +192,26 @@ public class Agent
 			
 			//collect resources
 			this.setResources(this.getResourceLevel() + 
-					manager.landscape.getCellAt(new_row_col[0], new_row_col[1]).getCurrentResource());
+			manager.landscape.getCellAt(new_row_col[0], new_row_col[1]).getCurrentResource());
 			manager.landscape.getCellAt(new_row_col[0], new_row_col[1]).setCurrentResource(0);
-		}
+
+		this.intermovement = minTime + getNewIntermovement();
+    		this.deathTime = minTime + (resources / metaRate);
+    		this.deathTime = Math.min(this.deathTime, maxAge);
+    		this.minTime = Math.min(intermovement, deathTime);
+
+		//}
 	}
 	
 	/*
 	 * Schedules death.
-	 */
+	
 	public void kill(SimulationManager manager)
 	{
 		manager.calendar.add(new Event(this, EventType.die, this.deathTime));
 	}
-	
+	*/
+        
 	/*
 	 * Returns the row and col in an int array with max resources within vision. 
 	 */
