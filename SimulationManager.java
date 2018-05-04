@@ -6,19 +6,18 @@ import java.util.*;
 
 class SimulationManager extends WindowManager
 {
-    protected int gridSize;
+    protected ArrayList<Agent> agentList; 
         // A list of all agents in the simulation; this is declared as
         // protected because we access it directly from within AgentCanvas.  
         // Why?  Because we only access it to draw the agents, and given 
         // that the list may be large, it doesn't make sense to
         // make a copy and return that copy to AgentCanvas.
 
-    // create a priority queue of events 
-	static PriorityQueue<Event> calendar = new PriorityQueue<Event>(new EventComparator());
+    
+	PriorityQueue<Event> calendar = new PriorityQueue<Event>(new EventComparator());
 	private boolean debug = true;
-    protected ArrayList<Agent> agentList; 
-    protected Landscape landscape;
-    protected int deaths;
+	protected Landscape landscape;
+    protected int gridSize;
 
     private AgentCanvas canvas;  // the canvas on which agents are drawn
     private static Random rng;
@@ -34,7 +33,7 @@ class SimulationManager extends WindowManager
 
         this.gridSize  = gridSize;
         this.agentList = new ArrayList<Agent>();
-        this.deaths = 0;
+
         rng = new Random(initialSeed);
 
         this.time = 0;   // initialize the simulation clock
@@ -111,7 +110,14 @@ class SimulationManager extends WindowManager
 		{
 			try { Thread.sleep(1); } catch (Exception e) {}
 			//get event data
-			Event e = calendar.poll();
+			
+			Event e = calendar.peek();
+//			this.time = e.getTime();
+			double previous = this.time;
+
+			update(e.getTime() - previous);
+			
+			e = calendar.poll();
 			EventType type = e.getEvent();
 			Agent a = e.getAgent();
 			
@@ -128,9 +134,8 @@ class SimulationManager extends WindowManager
 			///////////////////////////////////////////
 			
 			//get previous event's time and new event's time and update age and resource regrowth
-			double previous = this.time;
 			this.time = e.getTime();
-			update(this.time - previous);
+//			update(this.time - previous);
 			
 			if(type == EventType.move)
 			{
@@ -141,7 +146,6 @@ class SimulationManager extends WindowManager
 			}
 			else if(type == EventType.die)
 			{
-                this.deaths += 1;
 //				System.out.println("DEATH");
 				//set occupancy to false
 				landscape.getCellAt(a.getRow(), a.getCol()).setOccupied(false);
@@ -195,22 +199,22 @@ class SimulationManager extends WindowManager
     	for(int i = 0; i < agentList.size(); i++)
     	{
     		Agent agent_i = this.agentList.get(i);
-    		agent_i.setAge(agent_i.getAge() + timeDiff);
-//    		if(agent_i.getAge() > Agent.maxAge)
-//    		{
-//    			//schedule death
-//    			double x1 = this.time - timeDiff;
-//    			double x2 = this.time;
-//    			
-//    			double y1 = agent_i.getAge() - timeDiff;
-//    			double y2 = agent_i.getAge();
-//    			
-//    			double slope = (y2 - y1) / (x2 - x1);
-//    			double intercept = y2 - (slope * x2);
-//    			
-//    			agent_i.setDeathTime(-intercept / slope);
-//    			calendar.add(new Event(agent_i, EventType.die, agent_i.getDeathTime()));
-//    		}
+    		agent_i.setCurrentAge(agent_i.getCurrentAge() + timeDiff);
+    		if(agent_i.getCurrentAge() > agent_i.getMaxAge())
+    		{
+    			//schedule death
+    			double x1 = this.time - timeDiff;
+    			double x2 = this.time;
+    			
+    			double y1 = agent_i.getCurrentAge() - timeDiff;
+    			double y2 = agent_i.getCurrentAge();
+    			
+    			double slope = (y2 - y1) / (x2 - x1);
+    			double intercept = y1 - (slope * x1);
+    			
+    			agent_i.setDeathTime(-intercept / slope);
+    			calendar.add(new Event(agent_i, EventType.die, agent_i.getDeathTime()));
+    		}
     	}
     	
     	for(int i = 0; i < this.gridSize; i++)
@@ -233,20 +237,6 @@ class SimulationManager extends WindowManager
     //======================================================================
     public static void main(String[] args)
     {
-        // if you want to customize input, more than one command line arg
-        if(args.length > 0)
-        {
-            System.out.println("Specify inputs: (n-dimension, numAgents, initial seed, run time)");
-            Scanner sc = new Scanner(System.in);
-            int dim = sc.nextInt();
-            int numAgents = sc.nextInt();
-            int initSeed = sc.nextInt();
-            int runTime = sc.nextInt(); 
-            sc.close();
-            new SimulationManager(dim, numAgents, initSeed, runTime);
-        }
-        else {
-            new SimulationManager(40, 500, 8675309, 50);
-        }
+        new SimulationManager(40, 400, 8675309, 100);
     }
 }

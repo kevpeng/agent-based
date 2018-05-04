@@ -2,23 +2,19 @@ import java.util.*;
 
 public class Agent
 {
-    // generate a random
-	static Random rng = new Random(1234567);	
-    
-
-	private String id;
-    
-    private int row;
+	private int row;
 	private int col;
+	private String id;
 	
 	private int vision;
-    private double maxAge;
 	private double metaRate;
 	private double resources;
 	private double intermovement;
-	private double age;
+	private double maxAge;
+	private double currentAge;
 	private double deathTime;
-
+	
+	static Random rng = new Random(1234567);
 	
 	Agent(String id)
 	{
@@ -26,20 +22,10 @@ public class Agent
 		this.vision = (int) getUniform(1, 6, true);
 		this.metaRate = getUniform(1, 4, false);
 		this.resources = getUniform(5, 25, false);
-		this.age = getUniform(60, 100, false);
+		this.maxAge = getUniform(60, 100, false);
+		this.currentAge = 0;
 		this.intermovement = getNewIntermovement();
-	    this.maxAge = getUniform(60, 100, false);
-    }
-	
-	/* Agent(String id, int row, int col, int vision, double metRate, 
-		double initialResources, double intermovement, double age)
-	{
-		this.vision = vision;
-		this.metaRate = metRate;
-		this.resources = initialResources;
-		this.intermovement = intermovement;
-		this.age = age;
-	} */
+	}
 	
 	private double getUniform(int lower, int upper, boolean isVision)
 	{
@@ -93,9 +79,14 @@ public class Agent
 		return this.intermovement;
 	}
 	
-	public double getAge()
+	public double getCurrentAge()
 	{
-		return this.age;
+		return this.currentAge;
+	}
+	
+	public double getMaxAge()
+	{
+		return this.maxAge;
 	}
 	
 	public double getDeathTime()
@@ -124,9 +115,9 @@ public class Agent
 		this.intermovement = intermovement;
 	}
 	
-	public void setAge(double age)
+	public void setCurrentAge(double age)
 	{
-		this.age = age;
+		this.currentAge = age;
 	}
 	
 	public void setRowCol(int row, int col)
@@ -148,7 +139,8 @@ public class Agent
 		System.out.println("Vision: " + this.vision);
 		System.out.println("Metabolic Rate: " + this.metaRate);
 		System.out.println("Current Resources: " + this.resources);
-		System.out.println("Age: " + this.age);
+		System.out.println("Max Age: " + this.maxAge);
+		System.out.println("Current Age: " + this.currentAge);
 		System.out.println("Intermovement: " + this.intermovement + "\n");
 	}
 		
