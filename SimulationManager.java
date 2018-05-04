@@ -15,9 +15,9 @@ class SimulationManager extends WindowManager
 
     // create a priority queue of events 
     static PriorityQueue<Event> calendar = new PriorityQueue<Event>(new EventComparator());
-    private boolean debug = false;
     protected ArrayList<Agent> agentList; 
     protected Landscape landscape;
+    //counters for deaths
     protected int healthyDeaths;
     protected int infectedDeaths;
 
@@ -25,6 +25,18 @@ class SimulationManager extends WindowManager
     private static Random rng;
 
     private double time;  // the simulation time
+
+
+    // the debugger //========================//
+    //========================================//
+    private boolean debug = false; //=========//  
+    //========================================//
+    //========================================//  
+
+
+
+
+
 
     //======================================================================
     //* public SimulationManager(int gridSize, int numAgents, int initialSeed)
@@ -41,14 +53,17 @@ class SimulationManager extends WindowManager
 
         this.time = 0;   // initialize the simulation clock
 
+        // initialize a landscape
         landscape = new Landscape(gridSize, gridSize);
 
+        // add agents to a list
         for (int i = 0; i < numAgents; i++)
         {
             Agent a = new Agent("agent "+ agentList.size(), this.time);
             agentList.add(a);
             while(true)
             {
+                // put agents randomly in the landscape
                 int row = rng.nextInt(gridSize); // an int in [0, gridSize-1]
                 int col = rng.nextInt(gridSize); // an int in [0, gridSize-1]
                 if(landscape.getCellAt(row, col).isOccupied() == false)
@@ -58,9 +73,9 @@ class SimulationManager extends WindowManager
                     break;
                 }
             }
+            // add the agent to the list
             calendar.add(new Event(a, a.getminTime()));
         }
-
         this.createWindow();
         this.run(maxTime);
     }
@@ -87,8 +102,7 @@ class SimulationManager extends WindowManager
     public void run(double maxTime)
     {
        
-        
-        try { Thread.sleep(100); } catch (Exception e) {}
+        try { Thread.sleep(10); } catch (Exception e) {}
         this.time = 0;
         canvas.repaint();
         while(this.getTime() < maxTime)
@@ -96,13 +110,9 @@ class SimulationManager extends WindowManager
             try { Thread.sleep(1); } catch (Exception e) {}
             //get event data
             Event e = calendar.poll();
-            //EventType type = e.getEvent();
+            // get the agent
             Agent a = e.getAgent();
-                        /*
-                        if(a.getminTime() == a.getDeathTime()){
-                            type = EventType.die;
-                        }
-            */
+            
             ////////////////////////////////////////////
             if(debug)
             {
@@ -120,13 +130,13 @@ class SimulationManager extends WindowManager
             this.time = e.getTime();
             update(this.time - previous);
             
-            // 
+            // 0 == move 
             if(a.getNextEventType() == 0)
             {
                 a.move(this);
                 calendar.add(new Event(a,  a.getminTime()));
             }
-            else 
+            else // not move, die
             {
                 // increment death counter based on infected or not
                 if(a.getHasDisease())
@@ -150,6 +160,7 @@ class SimulationManager extends WindowManager
                 //add new agent
                 Agent new_a = new Agent("agent " + agentList.size(),this.time);
                 this.agentList.add(new_a);
+                // find place to add onto the landscape
                 while(true)
                 {
                     int row = rng.nextInt(this.gridSize); // an int in [0, gridSize-1]
@@ -177,22 +188,12 @@ class SimulationManager extends WindowManager
             canvas.repaint();
         }
     }
-    
+   
+
+    // updates regrowth of cell 
     private void update(double time)
     {
         
-        /*
-        for(int i = 0; i < agentList.size(); i++)
-        {
-            Agent agent_i = this.agentList.get(i);
-            
-        if(agent_i.getminTime() == agent_i.getDeathTime())
-            {
-                
-            calendar.add(new Event(agent_i, EventType.die, agent_i.getDeathTime()));
-        }
-        }
-        */
         for(int i = 0; i < this.gridSize; i++)
         {
             for(int j = 0; j < this.gridSize; j++)
