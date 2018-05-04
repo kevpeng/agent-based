@@ -65,7 +65,7 @@ class AgentCanvas extends JPanel
         gridHeight = simulation.getGridSize();
 
         // may or may not need to have a reset() method in the simulation mgr
-        // simulation.reset();  // remove all agents, etc.
+        //simulation.reset();  // remove all agents, etc.
 
         // determine grid's max capacity for scale colors
         this.maxCapacity = 0.0;
@@ -73,7 +73,8 @@ class AgentCanvas extends JPanel
         {
             for (int c = 0; c < simulation.gridSize; c++)
             {
-                double capacity = simulation.landscape.getCellAt(r,c).getCapacity();
+                double capacity = simulation.landscape.getCellAt(r,c).getCurrentResource();
+                //double capacity = simulation.landscape.getCellAt(r,c).getCapacity();
                 if (capacity > maxCapacity)
                 {
                     this.maxCapacity = capacity;
@@ -169,12 +170,13 @@ class AgentCanvas extends JPanel
 
                 // set the color we'll use to draw the agent
                 graphics.setPaint(Color.red);
+                
                 /*
                 if (a.needsToBeADifferentColor())
                     graphics.setPaint(Color.red);
                 else
                     graphics.setPaint(Color.blue);
-                */
+               */
 
                 graphics.fillOval(guiX, guiY, agentSize, agentSize);
 
@@ -223,7 +225,8 @@ class AgentCanvas extends JPanel
 
                 // set the color we'll use to draw the agent -- green scaled relative
                 // to maximum landscape capacity
-                double capacity = simulation.landscape.getCellAt(r, c).getCapacity();
+                //double capacity = simulation.landscape.getCellAt(r, c).getCapacity();
+                double capacity = simulation.landscape.getCellAt(r, c).getCurrentResource();
                 Color color = new Color(0, (int)(255 * capacity / this.maxCapacity), 0);
                 graphics.setPaint(color);
 

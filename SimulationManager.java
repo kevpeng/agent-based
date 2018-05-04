@@ -246,7 +246,7 @@ class SimulationManager extends WindowManager
             new SimulationManager(dim, numAgents, initSeed, runTime);
         }
         else {
-            new SimulationManager(40, 500, 8675309, 50);
+            new SimulationManager(40, 500, 8675309, 120);
         }
     }
 }
