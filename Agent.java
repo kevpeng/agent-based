@@ -15,6 +15,8 @@ public class Agent
     private double maxAge;
     private double metaRate;
     private double resources;
+
+    //varibles for handle events
     private double intermovement;
     private double deathTime;
     private double minTime;
@@ -62,6 +64,7 @@ public class Agent
     }
 
     //set up checking the the next event type 
+    //if return 0, then it would move else it jump to death event
     public int getNextEventType() {
         if(minTime == intermovement){
             return 0;
@@ -116,11 +119,6 @@ public class Agent
     }
 
 
-    public double getDeathTime()
-    {
-        return this.deathTime;
-    }
-
     public double getminTime()
     {
         return this.minTime;
@@ -159,11 +157,6 @@ public class Agent
         this.col = col;
     }
 
-    public void setDeathTime(double t)
-    {
-        this.deathTime = t;
-    }
-
     // would be used for spreading disease...
     public void setHasDisease(boolean boo)
     {
@@ -174,16 +167,6 @@ public class Agent
             this.metaRate = this.metaRate * 2;  // your body needs more resources to survive
         }
     }
-
-
-
-
-
-
-
-
-
-
 
 
     /* Prints information about agent */
@@ -205,17 +188,7 @@ public class Agent
 
         //Agent's Current Cell
         Cell current = manager.landscape.getCellAt(this.row, this.col);
-        //check if current resources and intermovement time allow for reaching new cell or does it die
-        /*
-           if(death(manager))
-           {
-           kill(manager);
-           }
-        //check if died because of age
-        */
-
-        //else
-        //{
+        
         //it didn't die, so find cell with most resources
         manager.landscape.getCellAt(this.row, this.col).setOccupied(false);
         int[] new_row_col = findMaxResourceCell(current, manager);
@@ -227,22 +200,12 @@ public class Agent
                 manager.landscape.getCellAt(new_row_col[0], new_row_col[1]).getCurrentResource());
         manager.landscape.getCellAt(new_row_col[0], new_row_col[1]).setCurrentResource(0);
 
+        //update the intermovment after moving 
         this.intermovement = minTime + getNewIntermovement();
         this.deathTime = minTime + (resources / metaRate);
         this.deathTime = Math.min(this.deathTime, maxAge);
         this.minTime = Math.min(intermovement, deathTime);
-
-        //}
     }
-
-    /*
-     * Schedules death.
-
-     public void kill(SimulationManager manager)
-     {
-     manager.calendar.add(new Event(this, EventType.die, this.deathTime));
-     }
-     */
 
     /*
      * Returns the row and col in an int array with max resources within vision. 
@@ -294,27 +257,8 @@ public class Agent
                 col = this.col;
             }
         }
+        
         return new int[]{row, col};
     }
 
-    /*
-     * Returns boolean if the agent died while moving and sets death time
-     */
-    public boolean death(SimulationManager manager)
-    {
-        double x1 = manager.getTime() - this.getIntermovement();
-        double x2 = manager.getTime();
-
-        double y1 = this.getResourceLevel();
-        double y2 = this.getResourceLevel() - this.metaRate * (x2 - x1);
-        if(y2 < 0)
-        {
-            double slope = (y2 - y1) / (x2 - x1);
-            double intercept = y2 - (slope * x2);
-
-            this.deathTime = -intercept / slope;
-            return true;
-        }
-        return false;
-    }
 }
